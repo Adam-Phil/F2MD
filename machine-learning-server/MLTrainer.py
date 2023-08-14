@@ -31,10 +31,7 @@ import random
 from MulticoreTSNE import MulticoreTSNE as TSNE
 
 from keras.models import Sequential  
-from keras.layers.core import Dense, Activation, Dropout 
-from keras.layers import TimeDistributed, CuDNNGRU, Input, Bidirectional, concatenate
-from keras.layers.recurrent import LSTM, GRU,SimpleRNN
-from keras.layers.normalization import BatchNormalization
+from keras.layers import TimeDistributed, Input, Bidirectional, concatenate, Dense, Activation, Dropout, LSTM, GRU,SimpleRNN, BatchNormalization
 from keras.models import Model
 from keras.models import load_model
 from keras.optimizers import Adam

@@ -106,8 +106,9 @@ class MlMain:
 			else:
 				self.savePath = self.savePath + '_Legacy_'+ str(version)
 			self.version_added = True
-
-
+		exists = os.path.exists(self.savePath)
+		if (not exists):
+			os.mkdir(self.savePath)
 		self.DataCollector.setCurDateSrt(self.curDateStr)
 		self.DataCollector.setSavePath(self.savePath)
 		self.Trainer.setCurDateSrt(self.curDateStr)
@@ -120,7 +121,7 @@ class MlMain:
 				self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
 			self.ReadDataFromFile(AIType)
 			#self.TrainData(AIType)
-			os._exit(0)
+			os._exit(0)		
 
 	def mlMain(self, version, bsmJsonString, AIType):
 
