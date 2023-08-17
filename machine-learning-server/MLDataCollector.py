@@ -19,9 +19,10 @@ import pickle
 
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
+		print("initializing data collector")
 		self.initValuesData = False
-		self.ValuesData = []
-		self.TargetData = []
+		self.valuesData = []
+		self.targetData = []
 
 		self.curDateStr = ''
 
@@ -33,26 +34,31 @@ class MlDataCollector:
 	def setSavePath(self, datastr):
 		self.savePath = datastr
 	
-	def saveData(self, it_num):
+	def saveData(self):
+		# print("Values Data to save: " + str(self.valuesData))
+		# print("Target Data to save: " + str(self.targetData))
 		with open(self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
-			pickle.dump(self.ValuesData, fp)
+			pickle.dump(self.valuesData, fp)
 		with open(self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
-			pickle.dump(self.TargetData, ft)
+			pickle.dump(self.targetData, ft)
 
 	def loadData(self):
 		with open (self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'rb') as fp:
-			self.ValuesData = pickle.load(fp)
+			self.valuesData = pickle.load(fp)
 		with open (self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'rb') as ft:
-			self.TargetData = pickle.load(ft)
+			self.targetData = pickle.load(ft)
+
+		# print("Values Data after loading: " + str(self.valuesData))
+		# print("Target Data after loading: " + str(self.targetData))
 
 
 	def prepare_arrays(self):
-		if isinstance(self.ValuesData[0], list):
-			for i in range(0,len(self.ValuesData)):
-				self.ValuesData[i] = np.array(self.ValuesData[i])
+		if isinstance(self.valuesData[0], list):
+			for i in range(0,len(self.valuesData)):
+				self.valuesData[i] = self.valuesData[i]
 		else:
-			self.ValuesData = np.array(self.ValuesData)
-		self.TargetData = np.array(self.TargetData)
+			self.valuesData = self.valuesData
+		self.targetData = self.targetData
 
         
 
@@ -61,12 +67,13 @@ class MlDataCollector:
 			self.initValuesData = True
 			if isinstance(bsmArray[0], list):
 				for i in range(0,len(bsmArray[0])):
-					self.ValuesData.append([])
-
+					self.valuesData.append([])
 		if isinstance(bsmArray[0], list):
 			for i in range(0,len(bsmArray[0])):
-				self.ValuesData[i].append(bsmArray[0][i])
+				self.valuesData[i].append(bsmArray[0][i])
 		else:
-			self.ValuesData.append(bsmArray[0])
-		self.TargetData.append(bsmArray[1])
+			self.valuesData.append(bsmArray[0])
+		self.targetData.append(bsmArray[1])
+		# print("Values Data: " + str(self.valuesData))
+		# print("Target Data: " + str(self.targetData))
 

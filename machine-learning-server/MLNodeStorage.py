@@ -11,7 +11,7 @@
  *******************************************************************************/
 """
 
-import numpy as np
+import numpy as npStorage
 from MLArrayStorage import MlArrayStorage
 import itertools
 import operator
@@ -29,9 +29,9 @@ class MlNodeStorage:
 			self.id_storage[index].add_bsm(test_id, time, cur_bsm, batch_size,label)
 		else:
 			self.id_index.append(my_id)
-			Storage = MlArrayStorage()
-			Storage.add_bsm(test_id, time, cur_bsm, batch_size,label)
-			self.id_storage.append(Storage)
+			storage = MlArrayStorage()
+			storage.add_bsm(test_id, time, cur_bsm, batch_size,label)
+			self.id_storage.append(storage)
 
 	def filter_bsms(self, curtime ,deltatime):
 		for i in range(len(self.id_index)-1,-1,-1):

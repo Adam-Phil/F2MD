@@ -34,11 +34,11 @@ import time
 
 RTDetectAttackTypes = False
 
-RTaddexistingweights= False
-RTuseexistingdata= False
+RTaddexistingweights= True
+RTuseexistingdata= True
 
-RTtrain = False
-RTcollectData = False
+RTtrain = True
+RTcollectData = True
 RTpredict = True
 
 Positive_Threshold = 0.5
@@ -50,9 +50,9 @@ class MlMain:
 	initiated = False
 
 	curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-	DataCollector = MlDataCollector()
-	Trainer = MlTrainer()
-	Storage = MlNodeStorage()
+	dataCollector = MlDataCollector()
+	trainer = MlTrainer()
+	storage = MlNodeStorage()
 	arrayLength = 60
 
 	collectDur = 0
@@ -109,11 +109,11 @@ class MlMain:
 		exists = os.path.exists(self.savePath)
 		if (not exists):
 			os.mkdir(self.savePath)
-		self.DataCollector.setCurDateSrt(self.curDateStr)
-		self.DataCollector.setSavePath(self.savePath)
-		self.Trainer.setCurDateSrt(self.curDateStr)
-		self.Trainer.setSavePath(self.savePath)
-		self.Trainer.setAIType(AIType)
+		self.dataCollector.setCurDateSrt(self.curDateStr)
+		self.dataCollector.setSavePath(self.savePath)
+		self.trainer.setCurDateSrt(self.curDateStr)
+		self.trainer.setSavePath(self.savePath)
+		self.trainer.setAIType(AIType)
 
 		self.trainedModelExists(AIType)
 		if self.RTTrainDataFromFile:
@@ -136,18 +136,19 @@ class MlMain:
 
 		if RTcollectData:
 			if self.collectDur < self.deltaCall:
-				self.collectDur = self.collectDur + 1;
-				self.DataCollector.collectData(curArray)
+				self.collectDur = self.collectDur + 1
+				# print("Collecting data from MLMain")
+				self.dataCollector.collectData(curArray)
 			else :
 				print("DataSave And Training " + str(self.deltaCall) + " Started ...")
 				self.collectDur = 0
-				self.DataCollector.saveData()
+				self.dataCollector.saveData()
 
 				if RTtrain:
-					print(len(self.Trainer.dataCollector.ValuesData))
-					self.Trainer.train(self.DataCollector,self.le)
+					print(len(self.dataCollector.valuesData))
+					self.trainer.train(self.dataCollector,self.le)
 					self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
-					self.deltaCall = len(self.Trainer.dataCollector.ValuesData)/2
+					self.deltaCall = len(self.trainer.dataCollector.valuesData)/2
 					#self.deltaCall = 10000000
 				print("DataSave And Training " + str(self.deltaCall) +" Finished!")
 
@@ -272,14 +273,14 @@ class MlMain:
 				self.clf = joblib.load(self.savePath+'/'+s)
 				if RTcollectData:
 					self.curDateStr = s[-23:-4]
-					self.DataCollector.setCurDateSrt(self.curDateStr)
-					self.Trainer.setCurDateSrt(self.curDateStr)
-					self.DataCollector.loadData()
+					self.dataCollector.setCurDateSrt(self.curDateStr)
+					self.trainer.setCurDateSrt(self.curDateStr)
+					self.dataCollector.loadData()
 				else:
-					self.DataCollector.setCurDateSrt(self.curDateStr)
-					self.Trainer.setCurDateSrt(self.curDateStr)
-				#self.deltaCall = self.DataCollector.valuesCollection.shape[0]/5
-				print("Loading " + str(len(self.DataCollector.ValuesData)) +  " Finished!")
+					self.dataCollector.setCurDateSrt(self.curDateStr)
+					self.trainer.setCurDateSrt(self.curDateStr)
+				#self.deltaCall = self.dataCollector.valuesCollection.shape[0]/5
+				print("Loading " + str(len(self.dataCollector.valuesData)) +  " Finished!")
 
 	def ReadDataFromFile(self, AIType):
 		print("DataSave And Training " + str(self.dataPath) + " Started ...")
@@ -327,30 +328,30 @@ class MlMain:
 							if (i_q not in already_parsed) and (len(queue_list[i_q][1]) > 0):
 								already_parsed.append(i_q)
 								tempDataCollector = queue_list[i_q][1][0]
-								print("Getting Results .... " + str(i_q) + " ... " + str(len(tempDataCollector.TargetData)))
-								for i in range(len(tempDataCollector.TargetData)-1,-1,-1):
+								print("Getting Results .... " + str(i_q) + " ... " + str(len(tempDataCollector.targetData)))
+								for i in range(len(tempDataCollector.targetData)-1,-1,-1):
 
-									self.DataCollector.collectData([[tempDataCollector.ValuesData[0][i], tempDataCollector.ValuesData[1][i]],tempDataCollector.TargetData[i]])
-									del tempDataCollector.TargetData[i]
-									del tempDataCollector.ValuesData[0][i]
-									del tempDataCollector.ValuesData[1][i]
+									self.dataCollector.collectData([[tempDataCollector.valuesData[0][i], tempDataCollector.valuesData[1][i]],tempDataCollector.targetData[i]])
+									del tempDataCollector.targetData[i]
+									del tempDataCollector.valuesData[0][i]
+									del tempDataCollector.valuesData[1][i]
 					print("Getting Results Finished!")
 
-					#self.DataCollector.saveData(it_i)
+					#self.dataCollector.saveData()
 					print("Iteration " +str(it_i)+ " End!")
 			else:
 				tempDataCollector = local_process([filesNames,self.dataPath,AIType])
-				for i in tqdm(range(len(tempDataCollector.TargetData)-1,-1,-1)):
-					self.DataCollector.collectData([tempDataCollector.ValuesData[i],tempDataCollector.TargetData[i]])
-					del tempDataCollector.TargetData[i]
-					del tempDataCollector.ValuesData[i]
-				self.DataCollector.saveData(0)
+				for i in tqdm(range(len(tempDataCollector.targetData)-1,-1,-1)):
+					self.dataCollector.collectData([tempDataCollector.valuesData[i],tempDataCollector.targetData[i]])
+					del tempDataCollector.targetData[i]
+					del tempDataCollector.valuesData[i]
+				self.dataCollector.saveData()
 		if RTaddexistingweights:
-			self.Trainer.setSavedModel(self.clf)
-		self.Trainer.train(self.DataCollector,self.le)
+			self.trainer.setSavedModel(self.clf)
+		self.trainer.train(self.dataCollector,self.le)
 
 		self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
-		#self.deltaCall = self.DataCollector.valuesCollection.shape[0]/5
+		#self.deltaCall = self.dataCollector.valuesCollection.shape[0]/5
 		print("DataSave And Training " + str(self.dataPath) + " Finished!")
 
 	def extract_time(self,json):
@@ -359,11 +360,11 @@ class MlMain:
 		except KeyError:
 			return 0
 
-	def TrainData(self, AIType):
+	def trainData(self, AIType):
 		print ("Training " + str(self.dataPath) + " Started ...")
-		self.Trainer.train(self.DataCollector,self.le)
+		self.trainer.train(self.dataCollector,self.le)
 		self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
-		self.deltaCall = self.DataCollector.valuesCollection.shape[0]/5
+		self.deltaCall = self.dataCollector.valuesCollection.shape[0]/5
 		print ("Training " + str(self.dataPath) + " Finished!")
 
 	def getNodeArray(self,bsmJsom,AIType):
@@ -380,32 +381,32 @@ class MlMain:
 
 		numLabel = np.array(self.le.transform([label])[0], dtype=np.int8)
 
-		self.Storage.add_bsm(receiverId,pseudonym, time, bsmJsom, self.arrayLength, numLabel)
+		self.storage.add_bsm(receiverId,pseudonym, time, bsmJsom, self.arrayLength, numLabel)
 
 		if time - self.filterdelta > RTFilterTime :
 			self.filterdelta = time
-			self.Storage.filter_bsms(time ,RTFilterKeepTime)
+			self.storage.filter_bsms(time ,RTFilterKeepTime)
 
 		if('SINGLE' in AIType):
-			returnArray = self.Storage.get_array(receiverId,pseudonym)
+			returnArray = self.storage.get_array(receiverId,pseudonym)
 		if('FEATURES' in AIType):
-			returnArray = self.Storage.get_array_features(receiverId,pseudonym)
+			returnArray = self.storage.get_array_features(receiverId,pseudonym)
 		if('AVEFEAT' in AIType):
-			returnArray = self.Storage.get_array_MLP_features(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_MLP_features(receiverId,pseudonym, self.arrayLength)
 		if('AVERAGE' in AIType):
-			returnArray = self.Storage.get_array_MLP(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_MLP(receiverId,pseudonym, self.arrayLength)
 		if('RECURRENT' in AIType):
-			returnArray = self.Storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)
 		if('RECUFEAT' in AIType):
-			returnArray = self.Storage.get_array_lstm_feat(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_lstm_feat(receiverId,pseudonym, self.arrayLength)
 		if('RECUSIN' in AIType):
-			returnArray = self.Storage.get_array_lstm_sin(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_lstm_sin(receiverId,pseudonym, self.arrayLength)
 		if('RECUMIX' in AIType):
-			returnArray = self.Storage.get_array_lstm_mix(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_lstm_mix(receiverId,pseudonym, self.arrayLength)
 		if('RECUALL' in AIType):
-			returnArray = self.Storage.get_array_lstm_all(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_lstm_all(receiverId,pseudonym, self.arrayLength)
 		if('COMBINED' in AIType):
-			returnArray = self.Storage.get_array_combined(receiverId,pseudonym, self.arrayLength)
+			returnArray = self.storage.get_array_combined(receiverId,pseudonym, self.arrayLength)
 
 
 		#print("cur_array: " + str(cur_array))
