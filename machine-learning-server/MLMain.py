@@ -39,7 +39,7 @@ RTuseexistingdata= False
 
 RTtrain = True
 RTcollectData = True
-RTpredict = False
+RTpredict = True
 
 Positive_Threshold = 0.5
 
@@ -133,6 +133,11 @@ class MlMain:
 		start_time = time.time()
 
 		bsmJsom = json.loads(bsmJsonString)
+		if len(bsmJsom['BsmPrint']['BSMs']) > 1:
+			to_write = json.dumps(bsmJsom, indent=4)
+			with open("sample.json", "w") as file:
+				file.write(to_write)
+			print("Done")
 		curArray = self.getNodeArray(bsmJsom,AIType)
 		# print("Joblib loaded jsonString")
 		if RTcollectData:
@@ -221,7 +226,6 @@ class MlMain:
 						self.multi_predict_count = 0
 					else:
 						self.multi_predict_count = self.multi_predict_count + 1
-
 				else:
 					# print("I should be here before tqdm; AIType: " + str(AIType))
 					if 'COMBINED' in AIType:

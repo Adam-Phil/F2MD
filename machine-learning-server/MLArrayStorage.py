@@ -54,10 +54,10 @@ class MlArrayStorage:
 		index = 0
 		try:
 			index = self.id_index.index(id)
-			self.id_time[index].append(time)
+			np.append(self.id_time[index],time)
 			self.id_bsm[index] = cur_bsm
-			self.id_array_x[index].append(cur_array[0])
-			self.id_array_y[index].append(cur_array[1])
+			np.append(self.id_array_x[index],cur_array[0])
+			np.append(self.id_array_y[index],cur_array[1])
 
 			if len(self.id_time[index]) > batch_size:
 				self.id_time[index] = self.id_time[index][-batch_size:]
@@ -68,15 +68,18 @@ class MlArrayStorage:
 
 		except ValueError:
 			self.id_index.append(id)
-			append_time = []
-			append_time.append(time)
+			append_time = np.full(batch_size-1,-1)
+			np.append(append_time,time)
 			self.id_time.append(append_time)
 			self.id_bsm.append(cur_bsm)
-			append_array_x = []
-			append_array_x.append(cur_array[0])
+			append_array_x = np.array([np.array([]) for _ in range(batch_size-1)])
+			np.append(append_array_x,cur_array[0])
 			self.id_array_x.append(append_array_x)
-			append_array_y = []
-			append_array_y.append(cur_array[1])
+			if type(cur_array[1]) == int or type(cur_array[1]) == float:
+				append_array_y = np.full(batch_size-1,-1)
+			else:
+				append_array_y = np.array([np.array([]) for _ in range(batch_size-1)])
+			np.append(append_array_y,cur_array[1])
 			self.id_array_y.append(append_array_y)
 
 
@@ -153,8 +156,9 @@ class MlArrayStorage:
 		#velAry2 = [nzeros,DeltaPos, DeltaPos, DeltaSpeed, Accel, DeltaAccel, DeltaHeading, DeltaTime]#24
 		#velAry3 = []#29
 
-		velAry = velAry1.tolist() + velAry2 + velAry3
+		velAry = np.array(velAry1.tolist()) + np.array(velAry2) + np.array(velAry3)
 		valuesArray = np.array(velAry,dtype=np.float32)
+		valuesArray = valuesArray.flatten("F")
 
 		return valuesArray
 

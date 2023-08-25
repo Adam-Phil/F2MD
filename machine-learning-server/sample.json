@@ -1,0 +1,89 @@
+{
+    "BsmPrint": {
+        "Metadata": {
+            "receiverId": 21,
+            "receiverPseudo": 10218,
+            "generationTime": 10.702871,
+            "mbType": "Genuine",
+            "attackType": "Genuine"
+        },
+        "BsmCheck": {
+            "rpP": 1.0,
+            "rP": 1.0,
+            "pP": 0.785714,
+            "sP": 1.0,
+            "pC": 1.0,
+            "sC": 1.0,
+            "psC": 0.687353,
+            "psmC": 0.872899,
+            "phC": 1.0,
+            "sA": 1.0,
+            "bF": 1.0,
+            "kPACS": 0.839686,
+            "kPCS": 0.832895,
+            "kPSCP": 0.99527,
+            "kPSCS": 0.984047,
+            "kPSCSP": 0.990802,
+            "kPSCSS": 0.982859,
+            "kSCC": 0.982784,
+            "inT": []
+        },
+        "BSMs": [
+            {
+                "Pseudonym": 1090,
+                "RealId": 9,
+                "CreationTime": 10.702763370378,
+                "ArrivalTime": 10.702871259395,
+                "MbType": "Genuine",
+                "AttackType": "Genuine",
+                "GpsCoord": [
+                    2.202389,
+                    48.714976,
+                    0.0
+                ],
+                "Pos": [
+                    2236.872711,
+                    696.324765,
+                    0.0
+                ],
+                "PosConfidence": [
+                    4.740781,
+                    4.393956,
+                    0.0
+                ],
+                "Speed": [
+                    3.609297,
+                    -15.061745,
+                    0.0
+                ],
+                "SpeedConfidence": [
+                    -0.007847,
+                    0.032745,
+                    0.0
+                ],
+                "Accel": [
+                    0.236461,
+                    -0.979584,
+                    0.0
+                ],
+                "AccelConfidence": [
+                    0.000511,
+                    0.002133,
+                    0.0
+                ],
+                "Heading": [
+                    0.128092,
+                    -0.991762,
+                    0.0
+                ],
+                "HeadingConfidence": [
+                    12.021053,
+                    77.770624,
+                    0.0
+                ],
+                "Width": 1.8,
+                "Length": 5.0
+            }
+        ]
+    }
+}

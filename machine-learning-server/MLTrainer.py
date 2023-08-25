@@ -76,8 +76,8 @@ class MlTrainer:
 
 	cur_index = -1
 
-	NewvaluesData = []
-	NewtargetData = []
+	newValuesData = []
+	newTargetData = []
 
 
 	def setCurDateSrt(self, datastr):
@@ -130,7 +130,7 @@ class MlTrainer:
 			combined = Dropout(0.3) (combined)
 			combined = Dense(y.shape[1], activation='softmax')(combined)
 
-			opt=Adam(lr=0.005)
+			opt=Adam(learning_rate=0.005)
 			reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.7,patience=4, min_lr=0.0005)
 			clf = Model(inputs=[input_lstm,input_mlp], outputs=combined)
 			clf.compile(loss='categorical_crossentropy', optimizer=opt,metrics=['accuracy'],weighted_metrics=['accuracy'])
@@ -138,20 +138,37 @@ class MlTrainer:
 			if self.SavedModelSet :
 				clf.set_weights(self.SavedModel.get_weights())
 
-			steps_per_epoch_calc = int(self.train_split*len(self.NewvaluesData))
-			steps_per_epoch_val = len(self.NewvaluesData) - steps_per_epoch_calc
+			steps_per_epoch_calc = int(self.train_split*len(self.newValuesData))
+			steps_per_epoch_val = len(self.newValuesData) - steps_per_epoch_calc
 			clf.fit(self.train_generator_0(), steps_per_epoch=steps_per_epoch_calc, epochs=10,class_weight=d_weights,verbose=1,callbacks=[reduce_lr], validation_data=self.train_generator_0(),validation_steps= steps_per_epoch_val)
+		elif self.AIType == 'SVM_SINGLE':
+			print('Training: ' + self.AIType)
+			y = np.array(data.targetData)
+			y = np.reshape(y, (1,np.product(y.shape)))[0]
+			d_weights = self.get_d_weights(y,le)
+			self.save_y = y
+			X = np.array(data.valuesData)
+			clf = SVC(gamma=0.001, C=100.)
+			clf.fit(X, y)
+
 		joblib.dump(clf, self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')
         
 		print("Saved " + self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')
 		
 
 		print("Predicting ...")
-
-		y_test = clf.predict(data.valuesData,batch_size=16384)
-		pred=np.argmax(y_test,axis=1)
+		if "LSTM" in self.AIType:
+			y_test = clf.predict(data.valuesData,batch_size=self.batch_size)
+			pred=np.argmax(y_test,axis=1)
+			ground=np.argmax(data.targetData,axis=1)
+		else:
+			y_test = clf.predict(data.valuesData)
+			pred = y_test
+			ground= data.targetData
+		
 		print("Predicting Finished!")
-		ground=np.argmax(data.targetData,axis=1)
+		# print(pred)
+		# print(ground)
 
 		res=classification_report(ground, pred)
 		print(le.dict_labels)
@@ -176,46 +193,49 @@ class MlTrainer:
 			seq_index = 0
 			if sequence_length in sequence_length_indexes.keys():
 				seq_index = sequence_length_indexes[sequence_length]
-				if(len(self.NewvaluesData[seq_index][0]) >= self.batch_size):
-					self.NewvaluesData.append([[],[]])
-					self.NewtargetData.append([])
-					sequence_length_indexes[sequence_length] = len(self.NewvaluesData) - 1
-					seq_index = len(self.NewvaluesData) - 1
+				if(len(self.newValuesData[seq_index][0]) >= self.batch_size):
+					self.newValuesData.append([[],[]])
+					self.newTargetData.append([])
+					sequence_length_indexes[sequence_length] = len(self.newValuesData) - 1
+					seq_index = len(self.newValuesData) - 1
 			else:
-				self.NewtargetData.append([])
-				self.NewvaluesData.append([[],[]])
-				sequence_length_indexes[sequence_length] = len(self.NewvaluesData) - 1
-				seq_index = len(self.NewvaluesData) - 1
+				self.newTargetData.append([])
+				self.newValuesData.append([[],[]])
+				sequence_length_indexes[sequence_length] = len(self.newValuesData) - 1
+				seq_index = len(self.newValuesData) - 1
 
-			self.NewvaluesData[seq_index][0].append(self.saveData.valuesData[0][cur_index])
-			self.NewvaluesData[seq_index][1].append(self.saveData.valuesData[1][cur_index])
-			self.NewtargetData[seq_index].append(self.save_y[cur_index])
+			self.newValuesData[seq_index][0].append(self.saveData.valuesData[0][cur_index])
+			self.newValuesData[seq_index][1].append(self.saveData.valuesData[1][cur_index])
+			self.newTargetData[seq_index].append(self.save_y[cur_index])
+			# print("New Values Data: " + str(self.newValuesData))
+			# print("New Target Data: " + str(self.newTargetData))
 
-		for val_index in (range(0,len(self.NewvaluesData))):	#tqdm
+
+		for val_index in (range(0,len(self.newValuesData))):	#tqdm
 			'''
-			if len(self.NewvaluesData[val_index][0]) <=self.batch_size:
+			if len(self.newValuesData[val_index][0]) <=self.batch_size:
 
 				temp_index = 0
-				max_index = len(self.NewvaluesData[val_index][0])
+				max_index = len(self.newValuesData[val_index][0])
 
-				while len(self.NewvaluesData[val_index][0])<self.batch_size:
-					self.NewvaluesData[val_index][0].append(self.NewvaluesData[val_index][0][temp_index])
-					self.NewvaluesData[val_index][1].append(self.NewvaluesData[val_index][1][temp_index])
-					self.NewtargetData[val_index].append(self.NewtargetData[val_index][temp_index])
+				while len(self.newValuesData[val_index][0])<self.batch_size:
+					self.newValuesData[val_index][0].append(self.newValuesData[val_index][0][temp_index])
+					self.newValuesData[val_index][1].append(self.newValuesData[val_index][1][temp_index])
+					self.newTargetData[val_index].append(self.newTargetData[val_index][temp_index])
 					temp_index = temp_index + 1
 					if temp_index >= max_index:
 						temp_index = 0
 			'''
 
-			self.NewvaluesData[val_index][0] = np.array(self.NewvaluesData[val_index][0])
-			self.NewvaluesData[val_index][1] = np.array(self.NewvaluesData[val_index][1])
-			self.NewtargetData[val_index] = np.array(self.NewtargetData[val_index])
+			self.newValuesData[val_index][0] = np.array(self.newValuesData[val_index][0])
+			self.newValuesData[val_index][1] = np.array(self.newValuesData[val_index][1])
+			self.newTargetData[val_index] = np.array(self.newTargetData[val_index])
 
 	def train_generator_0(self):
 
-		steps_per_epoch_calc = int(self.train_split*len(self.NewvaluesData))
-		steps_per_epoch_val = len(self.NewvaluesData) - steps_per_epoch_calc
-		cur_index_list = list(range(steps_per_epoch_val, len(self.NewvaluesData)))
+		steps_per_epoch_calc = int(self.train_split*len(self.newValuesData))
+		steps_per_epoch_val = len(self.newValuesData) - steps_per_epoch_calc
+		cur_index_list = list(range(steps_per_epoch_val, len(self.newValuesData)))
 		random.shuffle(cur_index_list)
 		cur_index_list_test = list(range(steps_per_epoch_val))
 		random.shuffle(cur_index_list_test)
@@ -224,11 +244,11 @@ class MlTrainer:
 		
 		while True:
 			if self.cur_index<1:
-				self.cur_index = len(self.NewvaluesData) - 1
+				self.cur_index = len(self.newValuesData) - 1
 			else:
 				self.cur_index = self.cur_index - 1
 			local_index = cur_index_list[self.cur_index]
-			yield self.NewvaluesData[local_index], self.NewtargetData[local_index]
+			yield self.newValuesData[local_index], self.newTargetData[local_index]
 
 	def get_d_weights(self, y,le):
 		y_train_str = le.inverse_transform(y)
