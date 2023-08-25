@@ -93,34 +93,31 @@ class MlTrainer:
 		self.SavedModel = SavedModel
 		self.SavedModelSet = True
 
-
 	def train(self, data, le):
 		data.prepare_arrays()
 		self.saveData = data
-            
 		if(self.AIType == 'COMBINED_LSTM10_DENSE36_DENSE24'):
 			print('Training: ' + self.AIType)
-			y = data.targetData
+			y = np.array(data.targetData)
 			y = np.reshape(y, (1,np.product(y.shape)))[0]
 			d_weights = self.get_d_weights(y,le)
 			y = to_categorical(y)
 
+
 			self.save_y = y
 
-			print(data.valuesData[0].shape)
-			print(data.valuesData[1].shape)
-			print(data.valuesData[0][0].shape)
-			print(data.valuesData[1][0].shape)
 			self.generate_values_for_train_generator_1()
 
-			input_lstm = Input(shape=(None, data.valuesData[0][0].shape[1]),name='lstm')
+			input_np_array = np.array(data.valuesData[0][0])
+			input_lstm = Input(shape=(None, input_np_array.shape[1]),name='lstm')
 			lstm = Bidirectional(LSTM(10,return_sequences=False))(input_lstm)
 			#lstm = Activation(activation='relu')(lstm)
 			#lstm = (BatchNormalization())(lstm)
 			lstm = Dropout(0.3) (lstm)
 			#lstm = GlobalMaxPooling1D()(lstm)
 
-			input_mlp = Input(shape=(data.valuesData[1].shape[1],),name='mlp')
+			input_np_mlp = np.array(data.valuesData[1])
+			input_mlp = Input(shape=(input_np_mlp.shape[1],),name='mlp')
 			mlp = (Dense(36))(input_mlp)
 			mlp = Activation(activation='relu')(mlp)
 			#mlp = (BatchNormalization())(mlp)
@@ -143,13 +140,14 @@ class MlTrainer:
 
 			steps_per_epoch_calc = int(self.train_split*len(self.NewvaluesData))
 			steps_per_epoch_val = len(self.NewvaluesData) - steps_per_epoch_calc
-			clf.fit_generator(self.train_generator_0(), steps_per_epoch=steps_per_epoch_calc, epochs=10,class_weight=d_weights,verbose=1,callbacks=[reduce_lr], validation_data=self.train_generator_0(),validation_steps= steps_per_epoch_val)
+			clf.fit(self.train_generator_0(), steps_per_epoch=steps_per_epoch_calc, epochs=10,class_weight=d_weights,verbose=1,callbacks=[reduce_lr], validation_data=self.train_generator_0(),validation_steps= steps_per_epoch_val)
 		joblib.dump(clf, self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')
         
 		print("Saved " + self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')
 		
 
 		print("Predicting ...")
+
 		y_test = clf.predict(data.valuesData,batch_size=16384)
 		pred=np.argmax(y_test,axis=1)
 		print("Predicting Finished!")
@@ -173,8 +171,8 @@ class MlTrainer:
 
 		sequence_length_indexes = {}
 
-		for cur_index in tqdm(range(0,self.saveData.valuesData[0].shape[0])):
-			sequence_length = self.saveData.valuesData[0][cur_index].shape[0]
+		for cur_index in (range(0,len(self.saveData.valuesData[0]))):	#tqdm
+			sequence_length = len(self.saveData.valuesData[0][cur_index])
 			seq_index = 0
 			if sequence_length in sequence_length_indexes.keys():
 				seq_index = sequence_length_indexes[sequence_length]
@@ -193,7 +191,7 @@ class MlTrainer:
 			self.NewvaluesData[seq_index][1].append(self.saveData.valuesData[1][cur_index])
 			self.NewtargetData[seq_index].append(self.save_y[cur_index])
 
-		for val_index in tqdm(range(0,len(self.NewvaluesData))):
+		for val_index in (range(0,len(self.NewvaluesData))):	#tqdm
 			'''
 			if len(self.NewvaluesData[val_index][0]) <=self.batch_size:
 
@@ -239,7 +237,7 @@ class MlTrainer:
 			if le.classes_[i] not in y_train_str:
 				le_classes_remove.append(i)
 		le_classes_temp = np.delete(le.classes_, le_classes_remove)
-		w = compute_class_weight('balanced', list(le_classes_temp), y_train_str)
+		w = compute_class_weight(class_weight='balanced', classes=list(le_classes_temp), y=y_train_str)
 		new_w = np.array([])
 		int_i = 0
 		for i in range(0,len(le.classes_)):

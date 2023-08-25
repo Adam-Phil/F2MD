@@ -25,7 +25,7 @@ dataPath = '/home/joseph/Projects/F2MD/mdmSave/IRT-Paper-Test-Data/MDBsmsList_V2
 
 print("Data Predict " + str(dataPath) + " Started ...")
 print("bsmDataExists?")
-filesNames = [f for f in tqdm(listdir(dataPath)) if isfile(join(dataPath, f))]
+filesNames = [f for f in tqdm(listdir(dataPath)) if isfile(join(dataPath, f))]	# tqdm
 
 
 totalLenS = int(len(filesNames)*0.0)

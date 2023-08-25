@@ -11,10 +11,6 @@
  *******************************************************************************/
 """
 
-import os
-import json
-import numpy as np
-from tqdm import tqdm
 import pickle
 
 class MlDataCollector:
@@ -74,6 +70,7 @@ class MlDataCollector:
 		else:
 			self.valuesData.append(bsmArray[0])
 		self.targetData.append(bsmArray[1])
+		# print("Collecting Data done!")
 		# print("Values Data: " + str(self.valuesData))
 		# print("Target Data: " + str(self.targetData))
 

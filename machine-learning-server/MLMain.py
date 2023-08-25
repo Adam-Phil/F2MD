@@ -35,11 +35,11 @@ import time
 RTDetectAttackTypes = False
 
 RTaddexistingweights= True
-RTuseexistingdata= True
+RTuseexistingdata= False
 
 RTtrain = True
 RTcollectData = True
-RTpredict = True
+RTpredict = False
 
 Positive_Threshold = 0.5
 
@@ -118,13 +118,14 @@ class MlMain:
 		self.trainedModelExists(AIType)
 		if self.RTTrainDataFromFile:
 			if RTaddexistingweights:
+				print("Loading data from File because RTTrainDataFromFile and RTaddexistingweights was true")
 				self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
 			self.ReadDataFromFile(AIType)
 			#self.TrainData(AIType)
 			os._exit(0)		
 
 	def mlMain(self, version, bsmJsonString, AIType):
-
+		# print("MLMain running...")
 		if not self.initiated:
 			self.init(version,AIType)
 			self.initiated = True
@@ -133,11 +134,12 @@ class MlMain:
 
 		bsmJsom = json.loads(bsmJsonString)
 		curArray = self.getNodeArray(bsmJsom,AIType)
-
+		# print("Joblib loaded jsonString")
 		if RTcollectData:
 			if self.collectDur < self.deltaCall:
+				# print("Collecting Data")
 				self.collectDur = self.collectDur + 1
-				# print("Collecting data from MLMain")
+				#print("Collecting data from MLMain")
 				self.dataCollector.collectData(curArray)
 			else :
 				print("DataSave And Training " + str(self.deltaCall) + " Started ...")
@@ -154,7 +156,7 @@ class MlMain:
 
 		return_value = "False"
 		#return return_value
-
+		# print("In between ML main")
 		if self.clf is None:
 			return_value = "False"
 			start_time_p = 0.0
@@ -221,6 +223,7 @@ class MlMain:
 						self.multi_predict_count = self.multi_predict_count + 1
 
 				else:
+					# print("I should be here before tqdm; AIType: " + str(AIType))
 					if 'COMBINED' in AIType:
 						array_npy = [np.array([curArray[0][0]]),np.array([curArray[0][1]])]
 					else:
@@ -245,7 +248,7 @@ class MlMain:
 			#print prediction
 			#print curArray[1]
 			#print "========================================"
-
+		# print("Using ML done")
 		end_time = time.time()
 		self.meanRuntime = (self.numRuntime*self.meanRuntime + (end_time-start_time))/(self.numRuntime+1)
 		self.meanRuntime_p = (self.numRuntime*self.meanRuntime_p + (end_time_p-start_time_p))/(self.numRuntime+1)
@@ -258,7 +261,7 @@ class MlMain:
 		else:
 			self.printRuntimeCnt = self.printRuntimeCnt + 1
 		self.numRuntime = self.numRuntime + 1
-
+		# print("returning")
 		return return_value
 
 
@@ -286,7 +289,8 @@ class MlMain:
 		print("DataSave And Training " + str(self.dataPath) + " Started ...")
 		print("bsmDataExists?")
 
-		filesNames = [f for f in tqdm(listdir(self.dataPath)) if isfile(join(self.dataPath, f))]
+		filesNames = [f for f in (listdir(self.dataPath)) if isfile(join(self.dataPath, f))]	#tqdm
+		print("DataPath")
 		numberOfIters = 1
 		numberOfThreads = 8
 		multi_processing = True
@@ -341,7 +345,8 @@ class MlMain:
 					print("Iteration " +str(it_i)+ " End!")
 			else:
 				tempDataCollector = local_process([filesNames,self.dataPath,AIType])
-				for i in tqdm(range(len(tempDataCollector.targetData)-1,-1,-1)):
+				for i in (range(len(tempDataCollector.targetData)-1,-1,-1)):	#tqdm	
+					print("TempDataCollector")
 					self.dataCollector.collectData([tempDataCollector.valuesData[i],tempDataCollector.targetData[i]])
 					del tempDataCollector.targetData[i]
 					del tempDataCollector.valuesData[i]
@@ -420,7 +425,9 @@ def local_process(local_input_list, thread, q):
 	localMaMain = MlMain()
 	localDataCollector = MlDataCollector()
 	bsm_list = []
-	for i in tqdm(range(0,int(len(filesNames)*0.2))):
+	print("Local Process")
+	for i in (range(0,int(len(filesNames)*0.2))):	#tqdm
+		print("FileNames")
 		s = filesNames[i]
 		if s.endswith(".bsm"):
 			bsmJsonString = open(dataPath+'/' +s, 'r').read()
@@ -438,7 +445,9 @@ def local_process(local_input_list, thread, q):
 	#print(bsm_list[0]['BsmPrint']['Metadata']['generationTime'])
 	#print(bsm_list[-1]['BsmPrint']['Metadata']['generationTime'])
 
-	for i in tqdm(range(len(bsm_list)-1,-1,-1)):
+	print("Going into bsm list")
+	for i in (range(len(bsm_list)-1,-1,-1)):	#tqdm
+		print("BsmList")
 		curArray = localMaMain.getNodeArray(bsm_list[i],AIType)
 		localDataCollector.collectData(curArray)
 		del bsm_list[i]

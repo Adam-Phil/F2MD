@@ -32,13 +32,14 @@ numberOfThreads = 16
 multi_processing = True
 
 def local_process(filesNames,threadNumber, thread, q):
+	print("Local Process")
 	localMlMain = MlMain()
 	localMlMain.RTmultipredict = True
 	localMlMain.multi_predict_count = int(localMlMain.multi_predict_num*threadNumber/numberOfThreads)
 	
 	totalLenS = int(len(filesNames)*0.0)
 	totalLen = int(len(filesNames)*1.0)
-	for i in tqdm(range(totalLenS,totalLen),unit=' '+AIType+' '):
+	for i in (range(totalLenS,totalLen),unit=' '+AIType+' '):	#tqdm
 		s = filesNames[i]
 		if s.endswith(".bsm"):
 			bsmJsonString = open(dataPath+'/' +s, 'r').read()
