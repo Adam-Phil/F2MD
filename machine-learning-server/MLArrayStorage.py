@@ -39,7 +39,7 @@ class MlArrayStorage:
 
 	def filter_array(self, curtime ,deltatime):
 		for i in range(len(self.id_index)-1,-1,-1):
-			if (curtime - self.id_time[i][-1]) > deltatime:
+			if (curtime - self.id_time[i][-1]) > deltatime and self.id_array_y[i][-1] != -1:
 				del self.id_index[i]
 				del self.id_bsm[i]
 				for j in range(len(self.id_time[i])-1,-1,-1):
@@ -52,7 +52,7 @@ class MlArrayStorage:
 
 	def add_array(self, id, time, cur_array,cur_bsm, batch_size):
 		index = 0
-		try:
+		if(id in self.id_index):
 			index = self.id_index.index(id)
 			self.id_time[index] = np.append(self.id_time[index],time)
 			self.id_bsm[index] = cur_bsm
@@ -66,19 +66,25 @@ class MlArrayStorage:
 
 			self.bubblesort(index)
 
-		except ValueError:
+		else:
 			self.id_index.append(id)
 			append_time = np.full(batch_size-1,-1)
 			append_time = np.append(append_time,time)
 			self.id_time.append(append_time)
 			self.id_bsm.append(cur_bsm)
-			append_array_x = np.array([np.array([]) for _ in range(batch_size-1)])
+			append_array_x = np.full((batch_size-1,len(cur_array[0])),-100000)
+			print(append_array_x)
+			print(cur_array[0])
 			append_array_x = np.append(append_array_x,cur_array[0])
+			print(append_array_x)
 			self.id_array_x.append(append_array_x)
+			print(type(cur_array[1]))
 			if type(cur_array[1]) == int or type(cur_array[1]) == float:
+				print("Float or int")
 				append_array_y = np.full(batch_size-1,-1)
 			else:
-				append_array_y = np.array([np.array([]) for _ in range(batch_size-1)])
+				print("Other")
+				append_array_y = np.full((batch_size-1,cur_array[1].size),-1)
 			append_array_y = np.append(append_array_y,cur_array[1])
 			self.id_array_y.append(append_array_y)
 
@@ -156,10 +162,10 @@ class MlArrayStorage:
 		#velAry2 = [nzeros,DeltaPos, DeltaPos, DeltaSpeed, Accel, DeltaAccel, DeltaHeading, DeltaTime]#24
 		#velAry3 = []#29
 
-		velAry = np.array(velAry1.tolist()) + np.array(velAry2) + np.array(velAry3)
+		velAry = np.concatenate((np.array(velAry1.tolist()),np.array(velAry2),np.array(velAry3)),axis=None)
 		valuesArray = np.array(velAry,dtype=np.float32)
 		valuesArray = valuesArray.flatten("F")
-
+		# print(len(valuesArray))
 		return valuesArray
 
 	def get_array(self, id):
@@ -306,8 +312,9 @@ class MlArrayStorage:
 
 	def get_array_combined(self, id, batch_size):
 		index = self.id_index.index(id)
-		list_X_Orig = self.id_array_x[index][-batch_size:]
+		list_X_Orig = np.reshape(self.id_array_x[index], (batch_size,29))
 		list_Y = self.id_array_y[index][-batch_size:]
+		print(list_X_Orig)
 		list_X =np.array(list_X_Orig)[:,-10:]
 		if APPEND_ZEROS:
 			if len(list_X)<batch_size:
