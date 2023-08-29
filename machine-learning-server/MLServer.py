@@ -51,8 +51,8 @@ class S(BaseHTTPRequestHandler):
 		#requestStr = unquote(self.path)
 
 		# print(self.path)
-		pred = self.globalMlMain.mlMain(version,self.path, 'COMBINED_LSTM10_DENSE36_DENSE24')
-		# pred = self.globalMlMain.mlMain(version,self.path, 'SVM_SINGLE')
+		# pred = self.globalMlMain.mlMain(version,self.path, 'COMBINED_LSTM10_DENSE36_DENSE24')
+		pred = self.globalMlMain.mlMain(version,self.path, 'SVM_SINGLE')
 
 	   	# the response
 		self.wfile.write(pred.encode('utf-8'))
