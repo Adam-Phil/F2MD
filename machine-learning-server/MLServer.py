@@ -51,7 +51,9 @@ class S(BaseHTTPRequestHandler):
 		#requestStr = unquote(self.path)
 
 		# print(self.path)
-		# pred = self.globalMlMain.mlMain(version,self.path, 'COMBINED_LSTM10_DENSE36_DENSE24')
+		# pred = self.globalMlMain.mlMain(version,self.path, 'LSTM_SINGLE')
+		# pred = self.globalMlMain.mlMain(version,self.path, 'MLP_SINGLE_L1N25')
+		# pred = self.globalMlMain.mlMain(version,self.path, 'MLP_SINGLE_L3N25')
 		pred = self.globalMlMain.mlMain(version,self.path, 'SVM_SINGLE')
 
 	   	# the response

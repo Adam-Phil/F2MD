@@ -64,7 +64,7 @@ class MlTrainer:
 
     def train(self, data, le):
         self.saveData = cp.deepcopy(data)
-        if(self.AIType == "LSTM_COMBINED"):
+        if(self.AIType == "LSTM_SINGLE"):
             print('Training: ' + self.AIType)
             
             X,y,d_weights = self.get_values_for_train(data,le)
@@ -78,12 +78,12 @@ class MlTrainer:
             reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.7,patience=4, min_lr=0.0005)
             clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
             clf.fit(X, y,epochs=10, batch_size=64,class_weight=d_weights, callbacks=[reduce_lr])
-        elif(self.AIType == "MLP_AVERAGE_L1N25"):
+        elif(self.AIType == "MLP_SINGLE_L1N25"):
             X,y,d_weights = self.get_values_for_train(data,le)
             self.save_y = cp.deepcopy(y) 
             clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
             clf.fit(X, y)
-        elif(self.AIType == "MLP_AVERAGE_L3N25"):
+        elif(self.AIType == "MLP_SINGLE_L3N25"):
             X,y,d_weights = self.get_values_for_train(data,le)
             self.save_y = cp.deepcopy(y) 
             clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
@@ -141,7 +141,7 @@ class MlTrainer:
         d_weights = dict(enumerate(new_w))
         gen_index = le.transform(['Genuine'])[0]
         d_weights[gen_index] = (len(le.classes_)-1) * d_weights[gen_index]
-        print("d_weights" + str(d_weights))
+        # print("d_weights" + str(d_weights))
         return d_weights
     
     def get_values_for_train(self,data,le):
@@ -152,20 +152,15 @@ class MlTrainer:
         y = np.reshape(y, (1,np.product(y.shape)))[0]
         print(y)
         d_weights = self.get_d_weights(y,le)
-        y = to_categorical(y)  
+        if "LSTM" in self.AIType:
+            y = to_categorical(y)  
         print(y)
 
         # x part
         print("----------X Part----------")
         value_array = []
-        if isinstance(data.valuesData[0], list):
-            print("Is list one")
-            for i in range(len(data.valuesData)):
-                one_vehicle_data = data.valuesData[i]
-                if isinstance(one_vehicle_data,list):
-                    print("Is list two")
-                    for values in one_vehicle_data:
-                        value_array.append(values)
+        for values in data.valuesData:
+            value_array.append(values)
         X = np.array(value_array)
         print(X.shape)
         print(y.size)

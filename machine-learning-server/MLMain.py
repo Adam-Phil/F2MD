@@ -46,7 +46,7 @@ class MlMain:
     arrayLength = 60
 
     collectDur = 0
-    deltaCall = 100000
+    deltaCall = 1000
 
     clf = None
     savePath = './saveFile/saveFile_D60'
@@ -68,8 +68,6 @@ class MlMain:
 
     def init(self, version, AIType):
         self.le.fit(self.labels_legacy)
-        print("Dict Indexes: " + str(self.le.dict_indexs))
-        print("Dict Labels: " + str(self.le.dict_labels))
 
         self.savePath = self.savePath + '_Legacy_'+ str(version)
         self.dataCollector.setCurDateSrt(self.curDateStr)
@@ -163,14 +161,14 @@ class MlMain:
             self.filterdelta = time
             self.storage.filter_bsms(time ,RTFilterKeepTime)
 
-        # TODO: Find out what all of those are
-        if('SINGLE' in AIType):
+        # TODO: Only take SINGLE or FEATURES here, everything else is some kind of historical data, which you do not need
+        if('SINGLE' in AIType): # takes the first 24 features of the arrays (so without position and so on)
             returnArray = self.storage.get_array(receiverId,pseudonym)
-        if('FEATURES' in AIType):
+        if('FEATURES' in AIType): # takes the first 18 features so only the plausibility checks
             returnArray = self.storage.get_array_features(receiverId,pseudonym)
-        if('AVEFEAT' in AIType):
+        if('AVEFEAT' in AIType): # takes the average and minimum over the arrayLength messages of array features and adds the last label to it (length 36 and 1)
             returnArray = self.storage.get_array_MLP_features(receiverId,pseudonym, self.arrayLength)
-        if('AVERAGE' in AIType):
+        if('AVERAGE' in AIType): # takes the same as before but adds the length of the history and the last positional data of the vehicle
             returnArray = self.storage.get_array_MLP(receiverId,pseudonym, self.arrayLength)
         if('RECURRENT' in AIType):
             returnArray = self.storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)

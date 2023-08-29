@@ -54,10 +54,10 @@ class MlArrayStorage:
 		index = 0
 		if(id in self.id_index):
 			index = self.id_index.index(id)
-			self.id_time[index] = np.append(self.id_time[index],time)
+			self.id_time[index].append(time)
 			self.id_bsm[index] = cur_bsm
-			self.id_array_x[index] = np.append(self.id_array_x[index],cur_array[0])
-			self.id_array_y[index] = np.append(self.id_array_y[index],cur_array[1])
+			self.id_array_x[index].append(cur_array[0])
+			self.id_array_y[index].append(cur_array[1])
 
 			if len(self.id_time[index]) > batch_size:
 				self.id_time[index] = self.id_time[index][-batch_size:]
@@ -68,24 +68,15 @@ class MlArrayStorage:
 
 		else:
 			self.id_index.append(id)
-			append_time = np.full(batch_size-1,-1)
-			append_time = np.append(append_time,time)
+			append_time = []
+			append_time.append(time)
 			self.id_time.append(append_time)
 			self.id_bsm.append(cur_bsm)
-			append_array_x = np.full((batch_size-1,len(cur_array[0])),-100000)
-			print(append_array_x)
-			print(cur_array[0])
-			append_array_x = np.append(append_array_x,cur_array[0])
-			print(append_array_x)
+			append_array_x = []
+			append_array_x.append(cur_array[0])
 			self.id_array_x.append(append_array_x)
-			print(type(cur_array[1]))
-			if type(cur_array[1]) == int or type(cur_array[1]) == float:
-				print("Float or int")
-				append_array_y = np.full(batch_size-1,-1)
-			else:
-				print("Other")
-				append_array_y = np.full((batch_size-1,cur_array[1].size),-1)
-			append_array_y = np.append(append_array_y,cur_array[1])
+			append_array_y = []
+			append_array_y.append(cur_array[1])
 			self.id_array_y.append(append_array_y)
 
 
@@ -165,7 +156,7 @@ class MlArrayStorage:
 		velAry = np.concatenate((np.array(velAry1.tolist()),np.array(velAry2),np.array(velAry3)),axis=None)
 		valuesArray = np.array(velAry,dtype=np.float32)
 		valuesArray = valuesArray.flatten("F")
-		# print(len(valuesArray))
+		print(len(valuesArray))
 		return valuesArray
 
 	def get_array(self, id):
