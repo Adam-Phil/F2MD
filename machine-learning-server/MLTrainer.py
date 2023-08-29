@@ -107,8 +107,10 @@ class MlTrainer:
             ground= data.targetData
         
         print("Predicting Finished!")
-        # print(pred)
-        # print(ground)
+        y_test = clf.predict(X,batch_size=16384)
+        pred=np.argmax(y_test,axis=1)
+        print("Predicting Finished!")
+        ground=np.argmax(data.TargetData,axis=1)
 
         res=classification_report(ground, pred)
         print(le.dict_labels)
