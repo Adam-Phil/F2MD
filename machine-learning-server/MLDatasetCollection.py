@@ -6,9 +6,9 @@ savePath = os.getcwd() + "/F2MD/machine-learning-server/saveFile/saveFile_D60_Le
 curDateStr = "SVM_together"
 
 def saveData(valuesData, targetData):
-    with open(savePath+'/valuesSave_'+curDateStr+'.listpkl', 'wb') as fp:
+    with open(savePath+'/valuesSave_'+curDateStr+'.listpkl', 'ab') as fp:
         pickle.dump(valuesData, fp)
-    with open(savePath+'/targetSave_'+curDateStr +'.listpkl', 'wb') as ft:
+    with open(savePath+'/targetSave_'+curDateStr +'.listpkl', 'ab') as ft:
         pickle.dump(targetData, ft)
 
 def loadData(file_path):
@@ -27,19 +27,22 @@ def appendData(data, newDataPath):
 
 
 def main():
-    valuesData = None
-    targetData = None
+    firstValue = True
+    firstTarget = True
     dataFileNames = os.listdir(savePath)
     for fileName in dataFileNames:
-        if fileName[-8:] == ".listpkl":
+        if fileName[-8:] == ".listpkl" and not "together" in fileName:
+            print("Saving: " + fileName)
             if "valuesSave" in fileName:
-                if valuesData == None:
+                if firstValue:
                     valuesData = loadData(fileName)
+                    firstValue = False
                 else:
                     appendData(valuesData,fileName)
             elif "targetSave" in fileName:
-                if targetData == None:
+                if firstTarget:
                     targetData = loadData(fileName)
+                    firstTarget = False
                 else:
                     appendData(targetData,fileName)
             else:
