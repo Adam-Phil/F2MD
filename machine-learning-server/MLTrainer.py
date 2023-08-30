@@ -16,7 +16,6 @@ from sklearn.svm import SVC
 
 import numpy as np
 import joblib
-import random 
 import copy as cp
 
 from keras.models import Sequential  
@@ -62,12 +61,12 @@ class MlTrainer:
         self.SavedModel = SavedModel
         self.SavedModelSet = True
 
-    def train(self, data, le):
+    def train(self, data, le, startTraining):
         self.saveData = cp.deepcopy(data)
         if(self.AIType == "LSTM_SINGLE"):
             print('Training: ' + self.AIType)
             
-            X,y,d_weights = self.get_values_for_train(data,le)
+            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y)          
 
             clf = Sequential()  
@@ -79,16 +78,16 @@ class MlTrainer:
             clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
             clf.fit(X, y,epochs=10, batch_size=64,class_weight=d_weights, callbacks=[reduce_lr])
         elif(self.AIType == "MLP_SINGLE_L1N25"):
-            X,y,d_weights = self.get_values_for_train(data,le)
+            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y) 
             clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
             clf.fit(X, y)
         elif(self.AIType == "MLP_SINGLE_L3N25"):
-            X,y,d_weights = self.get_values_for_train(data,le)
+            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y) 
             clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
         elif(self.AIType == "SVM_SINGLE"):
-            X,y,d_weights = self.get_values_for_train(data,le)
+            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y) 
             clf = SVC(gamma=0.001, C=100.)
             clf.fit(X, y)
@@ -142,21 +141,23 @@ class MlTrainer:
         # print("d_weights" + str(d_weights))
         return d_weights
     
-    def get_values_for_train(self,data,le):
+    def get_values_for_train(self, data, le, startTraining):
         
         # y part
         print("---------Y Part---------")
         y = np.array(data.targetData)
         y = np.reshape(y, (1,np.product(y.shape)))[0]
+        y = np.array(y[startTraining:len(y)])
         # print(y)
-        d_weights = self.get_d_weights(y,le)
-        if "LSTM" in self.AIType:
+        d_weights = self.get_d_weights(y, le)
+        if "LSTM" in self.AIType: # Don't know if this is even needed
             y = to_categorical(y)  
         print(y)
 
         # x part
         print("----------X Part----------")
         X = np.array(data.valuesData)
+        X = np.array(X[startTraining:len(X),:])
         print(X.shape)
         print(y.size)
         return X,y,d_weights

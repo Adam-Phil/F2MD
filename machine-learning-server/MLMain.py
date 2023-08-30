@@ -47,6 +47,7 @@ class MlMain:
 
     collectDur = 0
     deltaCall = 1000
+    trainedSamples = 0
 
     clf = None
     savePath = './saveFile/saveFile_D60'
@@ -96,9 +97,10 @@ class MlMain:
 
             if RTtrain:
                 # print(len(self.dataCollector.valuesData))
-                self.trainer.train(self.dataCollector,self.le)
+                self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
                 self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
                 self.deltaCall = len(self.dataCollector.valuesData)/2
+                self.trainedSamples = len(self.dataCollector.valuesData)
             print("DataSave And Training " + str(self.deltaCall) +" Finished!")
         
         return_value = "False"
