@@ -28,7 +28,7 @@ from MLVarThresholdLite import MlVarThresholdLite
 import time
 
 clf = None
-RTtrain = True
+RTtrain = False
 RTpredict = True
 
 Positive_Threshold = 0.5
@@ -46,7 +46,7 @@ class MlMain:
     arrayLength = 60
 
     collectDur = 0
-    deltaCall = 1000
+    deltaCall = 100000
     trainedSamples = 0
 
     clf = None
@@ -91,7 +91,7 @@ class MlMain:
             self.collectDur = self.collectDur + 1
             self.dataCollector.collectData(curArray)
         else :
-            print("DataSave And Training " + str(self.deltaCall) + " Started ...")
+            # print("DataSave And Training " + str(self.deltaCall) + " Started ...")
             self.collectDur = 0
             self.dataCollector.saveData()
 
@@ -101,7 +101,7 @@ class MlMain:
                 self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
                 self.deltaCall = len(self.dataCollector.valuesData)/2
                 self.trainedSamples = len(self.dataCollector.valuesData)
-            print("DataSave And Training " + str(self.deltaCall) +" Finished!")
+            # print("DataSave And Training " + str(self.deltaCall) +" Finished!")
         
         return_value = "False"
         
