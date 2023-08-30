@@ -10,14 +10,14 @@
  * All rights reserved.
  *******************************************************************************/
 """
-
+from os import listdir
+from os.path import isfile, join
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 
 import numpy as np
 import joblib
 import copy as cp
-import os
 
 from keras.models import Sequential  
 from keras.layers import Dense, LSTM
@@ -65,38 +65,37 @@ class MlTrainer:
     def train(self, data, le, startTraining):
         self.saveData = cp.deepcopy(data)
         print('Training: ' + self.AIType)
-        if(self.AIType == "LSTM_SINGLE"):            
-            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
-            self.save_y = cp.deepcopy(y)          
-
-            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
-                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
-            else:
-                clf = Sequential()  
-                clf.add(LSTM(128, return_sequences=True, input_shape=(X.shape[1], X.shape[2])))
-                clf.add(LSTM(128, return_sequences=True))
-                clf.add(LSTM(128, return_sequences=False))
-                clf.add(Dense(y.shape[1],activation='softmax'))  
-                reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.7,patience=4, min_lr=0.0005)
-                clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
-            clf.fit(X, y,epochs=10, batch_size=64,class_weight=d_weights, callbacks=[reduce_lr])
-        elif(self.AIType == "MLP_SINGLE_L1N25"):
-            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
-            self.save_y = cp.deepcopy(y)
-            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
-                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
-            else:
-                clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
-            clf.partial_fit(X, y)
-        elif(self.AIType == "MLP_SINGLE_L3N25"):
-            X,y,d_weights = self.get_values_for_train(data, le, startTraining)
-            self.save_y = cp.deepcopy(y)
-            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
-                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
-            else:
-                clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
-            clf.partial_fit(X, y)
-        elif(self.AIType == "SVM_SINGLE"):
+        if (self.AIType != "SVM_SINGLE"):
+            filesNames = [f for f in listdir(self.savePath) if isfile(join(self.savePath, f))]
+            clf = None
+            for s in filesNames:
+                if s.startswith('clf_'+ self.AIType) and s.endswith(".pkl"):
+                    clf = joblib.load(self.savePath+'/'+s)
+            if(self.AIType == "LSTM_RECURRENT"):            
+                X,y,d_weights = self.get_values_for_train(data, le, startTraining)
+                self.save_y = cp.deepcopy(y)          
+                if clf == None:
+                    clf = Sequential()
+                    clf.add(LSTM(128, return_sequences=True, input_shape=(len(X[0]), len(X[0][0]))))
+                    clf.add(LSTM(128, return_sequences=True))
+                    clf.add(LSTM(128, return_sequences=False))
+                    clf.add(Dense(y.shape[1],activation='softmax'))  
+                    clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
+                reduce_lr = ReduceLROnPlateau(monitor='accuracy', factor=0.7,patience=4, min_lr=0.0005)
+                clf.fit(X, y,epochs=10, batch_size=64,class_weight=d_weights, callbacks=[reduce_lr])
+            elif(self.AIType == "MLP_SINGLE_L1N25"):
+                X,y,d_weights = self.get_values_for_train(data, le, startTraining)
+                self.save_y = cp.deepcopy(y)
+                if clf == None:
+                    clf = MLPClassifier(alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
+                clf.partial_fit(X, y, classes = list(le.dict_labels.keys()))
+            elif(self.AIType == "MLP_SINGLE_L3N25"):
+                X,y,d_weights = self.get_values_for_train(data, le, startTraining)
+                self.save_y = cp.deepcopy(y)
+                if clf == None:
+                    clf = MLPClassifier(alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
+                clf.partial_fit(X, y, classes = list(le.dict_labels.keys()))
+        else:
             X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y) 
             clf = SVC(gamma=0.001, C=100.)
@@ -106,10 +105,11 @@ class MlTrainer:
         
         print("Saved " + self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')
 
+        print(data.valuesData)
         if "LSTM" in self.AIType:
-            y_test = clf.predict(data.valuesData,batch_size=self.batch_size)
+            y_test = clf.predict(X,batch_size=self.batch_size)
             pred=np.argmax(y_test,axis=1)
-            ground=np.argmax(data.targetData,axis=1)
+            ground=data.targetData
         else:
             y_test = clf.predict(data.valuesData)
             pred = y_test
@@ -127,7 +127,7 @@ class MlTrainer:
         plt.xlabel('prediction')
         # plt.show()
         plt.savefig(self.savePath+'/fig_'+self.AIType + '_'+self.curDateStr+'.png', dpi=fig.dpi)
-        # plt.
+        plt.close()
 
     def get_d_weights(self, y,le):
         y_train_str = le.inverse_transform(y)
@@ -161,14 +161,18 @@ class MlTrainer:
         # print(y)
         d_weights = self.get_d_weights(y, le)
         if "LSTM" in self.AIType: # Don't know if this is even needed
-            y = to_categorical(y)  
+           y = to_categorical(y)  
         print(y)
 
         # x part
         print("----------X Part----------")
-        X = np.array(data.valuesData)
-        X = np.array(X[startTraining:len(X),:])
-        print(X.shape)
-        print(y.size)
+        if False and "LSTM" in self.AIType:
+            X = data.valuesData
+        else: 
+            X = np.array(data.valuesData)
+            X = np.array(X[startTraining:len(X),:])
+            print(len(data.valuesData))
+            print(X.shape)
+            print(y.size)
         return X,y,d_weights
 

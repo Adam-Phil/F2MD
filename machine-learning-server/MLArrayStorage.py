@@ -13,12 +13,8 @@
 import os
 import numpy as np
 import math
-import itertools
-import operator
-from sys import getsizeof
 
-
-APPEND_ZEROS = False
+APPEND_ZEROS = True
 
 class MlArrayStorage:
 

@@ -118,7 +118,7 @@ class MlMain:
             # print(pred_array)
             end_time_p = time.time()
             gen_index = self.le.transform(['Genuine'])[0]
-            if "SVM" in AIType:
+            if "SVM" in AIType or "MLP" in AIType:
                 prediction = pred_array[0]
             else:
                 prediction = pred_array[0][1-gen_index]
@@ -172,7 +172,7 @@ class MlMain:
             returnArray = self.storage.get_array_MLP_features(receiverId,pseudonym, self.arrayLength)
         if('AVERAGE' in AIType): # takes the same as before but adds the length of the history and the last positional data of the vehicle
             returnArray = self.storage.get_array_MLP(receiverId,pseudonym, self.arrayLength)
-        if('RECURRENT' in AIType):
+        if('RECURRENT' in AIType): # for LSTM as it uses sequential data
             returnArray = self.storage.get_array_lstm(receiverId,pseudonym, self.arrayLength)
         if('RECUFEAT' in AIType):
             returnArray = self.storage.get_array_lstm_feat(receiverId,pseudonym, self.arrayLength)
