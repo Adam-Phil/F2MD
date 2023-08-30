@@ -39,7 +39,7 @@ def local_process(filesNames,threadNumber, thread, q):
 	
 	totalLenS = int(len(filesNames)*0.0)
 	totalLen = int(len(filesNames)*1.0)
-	for i in (range(totalLenS,totalLen),unit=' '+AIType+' '):	#tqdm
+	for i in tqdm(range(totalLenS,totalLen),unit=' '+AIType+' '):	#tqdm
 		s = filesNames[i]
 		if s.endswith(".bsm"):
 			bsmJsonString = open(dataPath+'/' +s, 'r').read()

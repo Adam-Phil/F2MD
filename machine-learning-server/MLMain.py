@@ -95,10 +95,10 @@ class MlMain:
             self.dataCollector.saveData()
 
             if RTtrain:
-                print(len(self.dataCollector.valuesData))
+                # print(len(self.dataCollector.valuesData))
                 self.trainer.train(self.dataCollector,self.le)
                 self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
-                self.deltaCall = len(self.trainer.dataCollector.valuesData)/2
+                self.deltaCall = len(self.dataCollector.valuesData)/2
             print("DataSave And Training " + str(self.deltaCall) +" Finished!")
         
         return_value = "False"
@@ -113,7 +113,7 @@ class MlMain:
             array_npy = np.array([curArray[0]])
             start_time_p = time.time()
             pred_array = self.clf.predict(array_npy)
-            print(pred_array)
+            # print(pred_array)
             end_time_p = time.time()
             gen_index = self.le.transform(['Genuine'])[0]
             if "SVM" in AIType:

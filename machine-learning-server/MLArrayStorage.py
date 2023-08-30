@@ -156,7 +156,7 @@ class MlArrayStorage:
 		velAry = np.concatenate((np.array(velAry1.tolist()),np.array(velAry2),np.array(velAry3)),axis=None)
 		valuesArray = np.array(velAry,dtype=np.float32)
 		valuesArray = valuesArray.flatten("F")
-		print(len(valuesArray))
+		# print(len(valuesArray))
 		return valuesArray
 
 	def get_array(self, id):
@@ -305,7 +305,7 @@ class MlArrayStorage:
 		index = self.id_index.index(id)
 		list_X_Orig = np.reshape(self.id_array_x[index], (batch_size,29))
 		list_Y = self.id_array_y[index][-batch_size:]
-		print(list_X_Orig)
+		# print(list_X_Orig)
 		list_X =np.array(list_X_Orig)[:,-10:]
 		if APPEND_ZEROS:
 			if len(list_X)<batch_size:

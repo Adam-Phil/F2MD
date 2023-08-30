@@ -107,10 +107,6 @@ class MlTrainer:
             ground= data.targetData
         
         print("Predicting Finished!")
-        y_test = clf.predict(X,batch_size=16384)
-        pred=np.argmax(y_test,axis=1)
-        print("Predicting Finished!")
-        ground=np.argmax(data.TargetData,axis=1)
 
         res=classification_report(ground, pred)
         print(le.dict_labels)
@@ -120,9 +116,9 @@ class MlTrainer:
         sns.heatmap(conf_mat, annot=True, fmt='d',xticklabels=le.classes_, yticklabels=le.classes_)
         plt.ylabel('ground truth')
         plt.xlabel('prediction')
-        plt.show()
+        # plt.show()
         plt.savefig(self.savePath+'/fig_'+self.AIType + '_'+self.curDateStr+'.png', dpi=fig.dpi)
-        plt.clf()
+        # plt.
 
     def get_d_weights(self, y,le):
         y_train_str = le.inverse_transform(y)
@@ -152,7 +148,7 @@ class MlTrainer:
         print("---------Y Part---------")
         y = np.array(data.targetData)
         y = np.reshape(y, (1,np.product(y.shape)))[0]
-        print(y)
+        # print(y)
         d_weights = self.get_d_weights(y,le)
         if "LSTM" in self.AIType:
             y = to_categorical(y)  
@@ -160,10 +156,7 @@ class MlTrainer:
 
         # x part
         print("----------X Part----------")
-        value_array = []
-        for values in data.valuesData:
-            value_array.append(values)
-        X = np.array(value_array)
+        X = np.array(data.valuesData)
         print(X.shape)
         print(y.size)
         return X,y,d_weights
