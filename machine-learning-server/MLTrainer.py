@@ -17,6 +17,7 @@ from sklearn.svm import SVC
 import numpy as np
 import joblib
 import copy as cp
+import os
 
 from keras.models import Sequential  
 from keras.layers import Dense, LSTM
@@ -63,29 +64,38 @@ class MlTrainer:
 
     def train(self, data, le, startTraining):
         self.saveData = cp.deepcopy(data)
-        if(self.AIType == "LSTM_SINGLE"):
-            print('Training: ' + self.AIType)
-            
+        print('Training: ' + self.AIType)
+        if(self.AIType == "LSTM_SINGLE"):            
             X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y)          
 
-            clf = Sequential()  
-            clf.add(LSTM(128, return_sequences=True, input_shape=(X.shape[1], X.shape[2])))
-            clf.add(LSTM(128, return_sequences=True))
-            clf.add(LSTM(128, return_sequences=False))
-            clf.add(Dense(y.shape[1],activation='softmax'))  
-            reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.7,patience=4, min_lr=0.0005)
-            clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
+            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
+                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
+            else:
+                clf = Sequential()  
+                clf.add(LSTM(128, return_sequences=True, input_shape=(X.shape[1], X.shape[2])))
+                clf.add(LSTM(128, return_sequences=True))
+                clf.add(LSTM(128, return_sequences=False))
+                clf.add(Dense(y.shape[1],activation='softmax'))  
+                reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.7,patience=4, min_lr=0.0005)
+                clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
             clf.fit(X, y,epochs=10, batch_size=64,class_weight=d_weights, callbacks=[reduce_lr])
         elif(self.AIType == "MLP_SINGLE_L1N25"):
             X,y,d_weights = self.get_values_for_train(data, le, startTraining)
-            self.save_y = cp.deepcopy(y) 
-            clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
-            clf.fit(X, y)
+            self.save_y = cp.deepcopy(y)
+            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
+                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
+            else:
+                clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,), random_state=1)
+            clf.partial_fit(X, y)
         elif(self.AIType == "MLP_SINGLE_L3N25"):
             X,y,d_weights = self.get_values_for_train(data, le, startTraining)
-            self.save_y = cp.deepcopy(y) 
-            clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
+            self.save_y = cp.deepcopy(y)
+            if (os.isfile(self.savePath + '/clf_'+self.AIType + '_'+self.curDateStr+'.pkl')):
+                self.clf = joblib.load(self.savePath+'/clf_'+ self.AIType +'_'+self.curDateStr+'.pkl')
+            else:
+                clf = MLPClassifier(solver='lbfgs', alpha=1e-5,hidden_layer_sizes=(25,25,25,), random_state=1)
+            clf.partial_fit(X, y)
         elif(self.AIType == "SVM_SINGLE"):
             X,y,d_weights = self.get_values_for_train(data, le, startTraining)
             self.save_y = cp.deepcopy(y) 
