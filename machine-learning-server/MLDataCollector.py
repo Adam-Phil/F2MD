@@ -12,6 +12,7 @@
 """
 
 import pickle
+import numpy as np
 
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
@@ -47,6 +48,23 @@ class MlDataCollector:
 		# print("Values Data after loading: " + str(self.valuesData))
 		# print("Target Data after loading: " + str(self.targetData))
 
+	def loadNumberBasedData(self, number):
+		with open (self.savePath+'/valuesSave_'+str(number)+'.listpkl', 'rb') as fp:
+			self.valuesData = pickle.load(fp)
+		with open (self.savePath+'/targetSave_'+str(number) +'.listpkl', 'rb') as ft:
+			self.targetData = pickle.load(ft)
+		self.valuesData = np.array(self.valuesData)
+		self.targetData = np.array(self.targetData)
+
+	def appendData(self, numberNew):
+		with open (self.savePath+'/valuesSave_'+str(numberNew)+'.listpkl', 'rb') as fp:
+			valuesDataAppend = pickle.load(fp)
+		with open (self.savePath+'/targetSave_'+str(numberNew) +'.listpkl', 'rb') as ft:
+			targetDataAppend = pickle.load(ft)
+		valuesDataAppend = np.array(valuesDataAppend)
+		targetDataAppend = np.array(targetDataAppend)
+		self.valuesData = np.append(self.valuesData,valuesDataAppend, axis = 0)
+		self.targetData = np.append(self.targetData,targetDataAppend, axis = 0)
 
 	def prepare_arrays(self):
 		if isinstance(self.valuesData[0], list):
