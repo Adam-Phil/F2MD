@@ -4,7 +4,7 @@ import numpy as np
 import joblib
 import pickle
 
-savePath = "save" #TODO: Give the right save path here, if this is not right
+savePath = "saveFile/saveFile_D60_Legacy_V1" #TODO: Give the right save path here, if this is not right
 
 def loadData(file_path):
     with open (savePath+'/'+file_path, 'rb') as fp:

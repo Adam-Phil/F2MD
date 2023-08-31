@@ -13,6 +13,7 @@
 
 import pickle
 import numpy as np
+import datetime
 
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
@@ -34,11 +35,13 @@ class MlDataCollector:
 	def saveData(self):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
-		print(self.curDateStr)
+		self.curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 		with open(self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
 			pickle.dump(self.valuesData, fp)
 		with open(self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
 			pickle.dump(self.targetData, ft)
+		self.valuesData = []
+		self.targetData = []
 
 	def loadData(self):
 		with open (self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'rb') as fp:

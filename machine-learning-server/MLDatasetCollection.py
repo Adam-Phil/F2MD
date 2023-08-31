@@ -1,6 +1,7 @@
 import os
 import numpy as np
 import pickle
+from tqdm import tqdm
 
 savePath = os.getcwd() + "/F2MD/machine-learning-server/saveFile/saveFile_D60_Legacy_V1"
 curDateStr = "SVM_together"
@@ -34,7 +35,8 @@ def main():
     firstValue = True
     firstTarget = True
     dataFileNames = os.listdir(savePath)
-    for fileName in dataFileNames:
+    for i in tqdm(range(len(dataFileNames))):
+        fileName = dataFileNames[i]
         if fileName[-8:] == ".listpkl" and not "together" in fileName:
             print("Saving: " + fileName)
             if "valuesSave" in fileName:
@@ -42,15 +44,15 @@ def main():
                     valuesData = loadData(fileName)
                     firstValue = False
                 else:
-                    appendData(valuesData,fileName)
-                print(valuesData.shape)
+                    valuesData = appendData(valuesData,fileName)
+                # print(valuesData.shape)
             elif "targetSave" in fileName:
                 if firstTarget:
                     targetData = loadData(fileName)
                     firstTarget = False
                 else:
-                    appendData(targetData,fileName)
-                print(targetData.shape)
+                    targetData = appendData(targetData,fileName)
+                # print(targetData.shape)
             else:
                 raise ValueError
     saveData(valuesData,targetData)

@@ -94,7 +94,7 @@ class MlMain:
             print("DataSave And Training " + str(self.deltaCall) + " Started ...")
             self.collectDur = 0
             self.dataCollector.saveData()
-
+            self.inventory()
             if RTtrain:
                 # print(len(self.dataCollector.valuesData))
                 self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
@@ -206,4 +206,17 @@ class MlMain:
                 #self.deltaCall = self.dataCollector.valuesCollection.shape[0]/5
                 print("Loading " + str(len(self.dataCollector.valuesData)) +  " Finished!")
 
-    
+    def inventory(self):
+        print("----------DataCollector----------")
+        print("-----ValuesDataLength: " + str(len(self.dataCollector.valuesData)))
+        print("-----TargetDataLength: " + str(len(self.dataCollector.targetData)))
+        print("----------NodeStorage----------")
+        print("-----IdIndexLength: " + str(len(self.storage.id_index)))
+        print("-----IdStorageLength: " + str(len(self.storage.id_storage)))
+        indiv_stor_elem_length = []
+        for elem in self.storage.id_storage:
+            indiv_stor_elem_length.append(len(elem.id_array_y))
+        print("-----IndividualIdStorageElementsLengths: " + str(indiv_stor_elem_length))
+        print("----------VarThresholdLite----------")
+        print("-----List Lengths: " + str(len(self.varthrelite.step_stats)))
+
