@@ -34,6 +34,7 @@ class MlDataCollector:
 	def saveData(self):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
+		print(self.curDateStr)
 		with open(self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
 			pickle.dump(self.valuesData, fp)
 		with open(self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:

@@ -8,18 +8,22 @@ curDateStr = "SVM_together"
 def saveData(valuesData, targetData):
     with open(savePath+'/valuesSave_'+curDateStr+'.listpkl', 'ab') as fp:
         pickle.dump(valuesData, fp)
+    fp.close()
     with open(savePath+'/targetSave_'+curDateStr +'.listpkl', 'ab') as ft:
         pickle.dump(targetData, ft)
+    ft.close()
 
 def loadData(file_path):
-    with open (savePath+'/'+file_path, 'rb') as fp:
-        data = pickle.load(fp)
+    with open (savePath+'/'+file_path, 'rb') as f:
+        data = pickle.load(f)
+    f.close()
     data = np.array(data)
     return data
 
 def appendData(data, newDataPath):
-    with open (savePath+'/'+newDataPath, 'rb') as fp:
-        dataAppend = pickle.load(fp)
+    with open (savePath+'/'+newDataPath, 'rb') as f:
+        dataAppend = pickle.load(f)
+    f.close()
     dataAppend = np.array(dataAppend)
     retValues = np.append(data,dataAppend,axis = 0)
     return retValues
@@ -39,19 +43,20 @@ def main():
                     firstValue = False
                 else:
                     appendData(valuesData,fileName)
+                print(valuesData.shape)
             elif "targetSave" in fileName:
                 if firstTarget:
                     targetData = loadData(fileName)
                     firstTarget = False
                 else:
                     appendData(targetData,fileName)
+                print(targetData.shape)
             else:
                 raise ValueError
-    print(valuesData.shape)
-    print(targetData.shape)
     saveData(valuesData,targetData)
-    
-
-
+    controlValues = loadData("valuesSave_SVM_together.listpkl")
+    controlTargets = loadData("targetSave_SVM_together.listpkl")
+    print(controlValues.shape)
+    print(controlTargets.shape)
 
 if __name__ == "__main__": main()
