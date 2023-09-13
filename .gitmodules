@@ -1,6 +1,6 @@
 [submodule "veins-f2md"]
 	path = veins-f2md
-	url = https://github.com/josephkamel/veins-f2md.git
+	url = https://github.com/Adam-Phil/veins-f2md.git
 [submodule "inet"]
 	path = inet
 	url = https://github.com/inet-framework/inet.git
