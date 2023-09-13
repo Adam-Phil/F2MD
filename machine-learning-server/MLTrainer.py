@@ -166,8 +166,12 @@ class MlTrainer:
 
         # x part
         print("----------X Part----------")
-        if False and "LSTM" in self.AIType:
-            X = data.valuesData
+        if "LSTM" in self.AIType:
+            X = np.array(data.valuesData)
+            X = np.array(X[startTraining:len(X),:,:])
+            print(len(data.valuesData))
+            print(X.shape)
+            print(y.size)
         else: 
             X = np.array(data.valuesData)
             X = np.array(X[startTraining:len(X),:])

@@ -29,7 +29,7 @@ import time
 
 clf = None
 RTtrain = False
-RTpredict = True
+RTsave = True
 
 Positive_Threshold = 0.5
 
@@ -87,21 +87,22 @@ class MlMain:
 
         bsmJsom = json.loads(bsmJsonString)
         curArray = self.getNodeArray(bsmJsom,AIType)
-        if self.collectDur < self.deltaCall:
-            self.collectDur = self.collectDur + 1
-            self.dataCollector.collectData(curArray)
-        else :
-            print("DataSave And Training " + str(self.deltaCall) + " Started ...")
-            self.collectDur = 0
-            self.dataCollector.saveData()
-            self.inventory()
-            if RTtrain:
-                # print(len(self.dataCollector.valuesData))
-                self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
-                self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
-                self.deltaCall = len(self.dataCollector.valuesData)/2
-                self.trainedSamples = len(self.dataCollector.valuesData)
-            print("DataSave And Training " + str(self.deltaCall) +" Finished!")
+        if RTsave:
+            if self.collectDur < self.deltaCall:
+                self.collectDur = self.collectDur + 1
+                self.dataCollector.collectData(curArray)
+            else :
+                print("DataSave And Training " + str(self.deltaCall) + " Started ...")
+                self.collectDur = 0
+                self.dataCollector.saveData()
+                self.inventory()
+                if RTtrain:
+                    # print(len(self.dataCollector.valuesData))
+                    self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
+                    self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
+                    self.deltaCall = len(self.dataCollector.valuesData)/2
+                    self.trainedSamples = len(self.dataCollector.valuesData)
+                print("DataSave And Training " + str(self.deltaCall) +" Finished!")
         
         return_value = "False"
         
