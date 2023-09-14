@@ -12,8 +12,8 @@
 """
 
 import pickle
-import numpy as np
 import datetime
+import os
 
 check_type = "Catch"
 
@@ -52,40 +52,16 @@ class MlDataCollector:
 	def saveData(self):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
+		complete_save_path = self.savePath+"/" + check_type +'_Checks_Data/' + self.AIType
+		if not (os.path.exists(complete_save_path) and os.path.isdir(complete_save_path)):
+			os.mkdirs(complete_save_path)
 		self.curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-		with open(self.savePath +"/" + check_type +'_Checks_Data/' + self.AIType + '/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
+		with open(complete_save_path + '/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
 			pickle.dump(self.valuesData, fp)
-		with open(self.savePath+"/" + check_type +'_Checks_Data' + self.AIType + '/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
+		with open(complete_save_path + '/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
 			pickle.dump(self.targetData, ft)
 		self.valuesData = []
 		self.targetData = []
-
-	def loadData(self):
-		with open (self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'rb') as fp:
-			self.valuesData = pickle.load(fp)
-		with open (self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'rb') as ft:
-			self.targetData = pickle.load(ft)
-
-		# print("Values Data after loading: " + str(self.valuesData))
-		# print("Target Data after loading: " + str(self.targetData))
-
-	def loadNumberBasedData(self, number):
-		with open (self.savePath+'/valuesSave_'+str(number)+'.listpkl', 'rb') as fp:
-			self.valuesData = pickle.load(fp)
-		with open (self.savePath+'/targetSave_'+str(number) +'.listpkl', 'rb') as ft:
-			self.targetData = pickle.load(ft)
-		self.valuesData = np.array(self.valuesData)
-		self.targetData = np.array(self.targetData)
-
-	def appendData(self, numberNew):
-		with open (self.savePath+'/valuesSave_'+str(numberNew)+'.listpkl', 'rb') as fp:
-			valuesDataAppend = pickle.load(fp)
-		with open (self.savePath+'/targetSave_'+str(numberNew) +'.listpkl', 'rb') as ft:
-			targetDataAppend = pickle.load(ft)
-		valuesDataAppend = np.array(valuesDataAppend)
-		targetDataAppend = np.array(targetDataAppend)
-		self.valuesData = np.append(self.valuesData,valuesDataAppend, axis = 0)
-		self.targetData = np.append(self.targetData,targetDataAppend, axis = 0)
 
 	def prepare_arrays(self):
 		if isinstance(self.valuesData[0], list):
@@ -94,8 +70,6 @@ class MlDataCollector:
 		else:
 			self.valuesData = self.valuesData
 		self.targetData = self.targetData
-
-        
 
 	def collectData(self,bsmArray):
 		if not self.initValuesData:
