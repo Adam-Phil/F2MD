@@ -15,6 +15,8 @@ import pickle
 import numpy as np
 import datetime
 
+check_type = "Catch"
+
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
 		print("initializing data collector")
@@ -23,7 +25,7 @@ class MlDataCollector:
 		self.targetData = []
 
 		self.curDateStr = ''
-
+		self.AIType = ""
 		self.savePath = ''
 
 	def setCurDateSrt(self, datastr):
@@ -32,13 +34,28 @@ class MlDataCollector:
 	def setSavePath(self, datastr):
 		self.savePath = datastr
 	
+	def setAIType(self, AIType):
+		if "SVM" in AIType:
+			self.AIType = "SVM"
+		elif "LSTM" in AIType:
+			self.AIType = "LSTM"
+		elif "MLP" in AIType:
+			if "L1N25" in AIType:
+				self.AIType = "MLP_L1N25"
+			elif "L3N25" in AIType:
+				self.AIType = "MLP_L3N25"
+			else:
+				raise ValueError("Unknown MLP type")
+		else:
+			raise ValueError("Unknown AIType")
+
 	def saveData(self):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
 		self.curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-		with open(self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
+		with open(self.savePath +"/" + check_type +'_Checks_Data/' + self.AIType + '/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
 			pickle.dump(self.valuesData, fp)
-		with open(self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
+		with open(self.savePath+"/" + check_type +'_Checks_Data' + self.AIType + '/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
 			pickle.dump(self.targetData, ft)
 		self.valuesData = []
 		self.targetData = []
