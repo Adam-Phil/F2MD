@@ -29,7 +29,7 @@ import time
 
 clf = None
 RTtrain = False
-RTsave = False
+RTsave = True
 
 Positive_Threshold = 0.5
 
