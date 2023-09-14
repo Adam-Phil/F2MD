@@ -16,5 +16,5 @@ cd ./$d
 pwd
 gnuplot './gui-plots/realTimePlot.p' 
 cd ..
-var="/home/philip/src/F2MD/f2md-results"
+var="/home/a/adamczykp/src/F2MD/f2md-results"
 mv "$var/$d" "$var/${d}_${1}"
