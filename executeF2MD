@@ -2,15 +2,16 @@
 
 # commands for detaching from origin and attaching to my repository:
 
-tmux new-session -s F2MD   -n etc -d 'cd /etc; bash -i'
-tmux new-window  -t F2MD:1 -n var    'cd /home/philip/src/F2MD/machine-learning-server; ./launchMLServer V1; bash -i'
-tmux new-window  -t F2MD:2 -n var2   'cd /home/philip/src/F2MD/; ./launchSumoTraciDaemon; bash -i'
+tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
+tmux new-window  -t F2MD:1 -n var    "cd /home/philip/src/F2MD/machine-learning-server; ./launchMLServer ${1}; bash -i"
+tmux new-window  -t F2MD:2 -n var2   "cd /home/philip/src/F2MD/; ./launchSumoTraciDaemon; bash -i"
 tmux send-keys -t F2MD:2 "2" Enter
 sleep 5
-tmux new-window  -t F2MD:3 -n var3   'cd /home/philip/src/F2MD/; ./runScenario; bash -i'
+tmux new-window  -t F2MD:3 -n var3   "cd /home/philip/src/F2MD/; ./runScenario; bash -i"
 tmux send-keys -t F2MD:3 "${2}" Enter
 tmux send-keys -t F2MD:3 "1" Enter
 tmux send-keys -t F2MD:3 "1" Enter
+tmux attach -t F2MD:3
 
 
 

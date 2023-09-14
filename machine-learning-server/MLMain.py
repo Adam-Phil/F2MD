@@ -50,7 +50,7 @@ class MlMain:
     trainedSamples = 0
 
     clf = None
-    savePath = './saveFile/saveFile_D60'
+    savePath = './saveFile'
 
     meanRuntime = 0
     meanRuntime_p = 0
@@ -67,10 +67,9 @@ class MlMain:
     stats = MlStats()
     varthrelite = MlVarThresholdLite()
 
-    def init(self, version, AIType):
+    def init(self, AIType):
         self.le.fit(self.labels_legacy)
 
-        self.savePath = self.savePath + '_Legacy_'+ str(version)
         self.dataCollector.setCurDateSrt(self.curDateStr)
         self.dataCollector.setSavePath(self.savePath)
         self.trainer.setCurDateSrt(self.curDateStr)
@@ -78,9 +77,9 @@ class MlMain:
         self.trainer.setAIType(AIType)
         self.trainedModelExists(AIType)
 
-    def mlMain(self, version, bsmJsonString, AIType):
+    def mlMain(self, bsmJsonString, AIType):
         if not self.initiated:
-            self.init(version,AIType)
+            self.init(AIType)
             self.initiated = True
 
         start_time = time.time()
@@ -99,7 +98,7 @@ class MlMain:
                 if RTtrain:
                     # print(len(self.dataCollector.valuesData))
                     self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
-                    self.clf = joblib.load(self.savePath+'/clf_'+AIType+'_'+self.curDateStr+'.pkl')
+                    self.clf = joblib.load(self.savePath+'/clf_'+AIType+'.pkl')
                     self.deltaCall = len(self.dataCollector.valuesData)/2
                     self.trainedSamples = len(self.dataCollector.valuesData)
                 print("DataSave And Training " + str(self.deltaCall) +" Finished!")
@@ -196,9 +195,9 @@ class MlMain:
         print("trainedModelExists?")
 
         for s in filesNames:
-            if s.startswith('clf_'+AIType) and s.endswith(".pkl"):
+            if s.startswith('clf_'+AIType) and s.endswith(".pkl") and AIType in s:
 
-                print("Loading " + s + " " +AIType + " "+ self.curDateStr+ " ...")
+                print("Loading " + s + " " +AIType + " ...")
                 self.clf = joblib.load(self.savePath+'/'+s)
                 self.curDateStr = s[-23:-4]
                 self.dataCollector.setCurDateSrt(self.curDateStr)
