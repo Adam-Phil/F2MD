@@ -102,7 +102,7 @@ done
 cd $opt_net 
 ./run -u $opt_sim
 
-tmux kill-session -t F2MD
+# tmux kill-session -t F2MD
 
 
 
