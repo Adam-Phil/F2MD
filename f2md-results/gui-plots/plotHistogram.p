@@ -37,12 +37,12 @@ ACC(a,b,c,d) = (a+b)/(b+b+c+d)
 
 
 plot "VarThreAppV1.dat" using (TPR($2,$5)):xticlabel(1) title "SOTA Sensitivity",\
-"VarThreAppV2.dat" using (TPR($2,$5)):xticlabel(1) title "SCA Lib Sensitivity",\
 "VarThreAppV1.dat" using (PPV($2,$3)):xticlabel(1) title "SOTA Precision",\
-"VarThreAppV2.dat" using (PPV($2,$3)):xticlabel(1) title "SCA Lib Precision",\
-"VarThreAppV1.dat" using (F($2,$3,$5)):xticlabel(1) title "SCA Lib F-score" with linespoints,\
-"VarThreAppV2.dat" using (F($2,$3,$5)):xticlabel(1) title "SCA Lib F-score" with linespoints
+"VarThreAppV1.dat" using (F($2,$3,$5)):xticlabel(1) title "SCA Lib F-score" with linespoints
 
+#"VarThreAppV2.dat" using (PPV($2,$3)):xticlabel(1) title "SCA Lib Precision"
+#"VarThreAppV2.dat" using (F($2,$3,$5)):xticlabel(1) title "SCA Lib F-score" with linespoints
+#"VarThreAppV2.dat" using (TPR($2,$5)):xticlabel(1) title "SCA Lib Sensitivity"
 
 #"V1app.dat" using (FB((TPR($2,$5)),(PPV($2,$3)))):xticlabel(1) title "F-score V1" with linespoints,\
 #"V2app.dat" using (FB((TPR($2,$5)),(PPV($2,$3)))):xticlabel(1) title "F-score V2" with linespoints

@@ -28,5 +28,7 @@ funcT(x) = x/60
 
 plot "AppV1.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SOTA F-score' with lines lw 2 lc rgb "red" , \
 "AppV1Inst.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SOTA F-score Inst' ps 0.5 lc rgb "red" , \
-"AppV2.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SCA lib F-score' with lines lw 2 lc rgb "#4dbeee" , \
-"AppV2Inst.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SCA lib F-score Inst' ps 0.5 lc rgb "#4dbeee" 
+
+
+#"AppV2.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SCA lib F-score' with lines lw 2 lc rgb "#4dbeee"
+#"AppV2Inst.dat" using (funcT($2)):(funcAcc($6,$4)) title 'SCA lib F-score Inst' ps 0.5 lc rgb "#4dbeee" 

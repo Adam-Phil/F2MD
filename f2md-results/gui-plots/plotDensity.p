@@ -12,6 +12,6 @@ show grid
 set key right bottom
 
 stats "AppV1.dat" using (lastV1=$3) nooutput
-set label sprintf("d = %3.5gveh",lastV1) at graph 0.02,0.1 tc rgb '#00bb00'
+set label sprintf("Last d = %3.5gveh",lastV1) at graph 0.02,0.05 tc rgb ARG1
 
 plot "AppV1.dat" using (funcT($2)):($3) title 'Density' with lines lw 2 lc rgb "#009000" axes x1y1

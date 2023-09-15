@@ -24,11 +24,11 @@ K(TP,FN,TN,FP)=(((TP+TN)/(TP+FP+FN+TN))-(((TP+FP)*(TP+TN)+(TN+FP)*(TN+FN))/((TN+
 
 
 stats "AppV1.dat" using (lastV1=K($6,($7-$6),($5-$4),$4)) nooutput
-stats "AppV2.dat" using (lastV2=K($6,($7-$6),($5-$4),$4)) nooutput
-set label sprintf("V1 = %3.5g \nV2 = %3.5g", lastV1, lastV2) at graph 0.02,0.1 tc rgb '#00bb00'
+# stats "AppV2.dat" using (lastV2=K($6,($7-$6),($5-$4),$4)) nooutput
+set label sprintf("Last = %3.5g", lastV1) at graph 0.02,0.05 tc rgb ARG1
 
-plot "AppV2.dat" using (funcT($2)):(K($6,($7-$6),($5-$4),$4)) title "V2 K1" with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "blue",\
-"AppV1.dat" using (funcT($2)):(K($6,($7-$6),($5-$4),$4)) title "V1 K2" with lines lw 2 lc rgb "red"
+# "AppV2.dat" using (funcT($2)):(K($6,($7-$6),($5-$4),$4)) title "V2 K1" with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "blue"
+plot "AppV1.dat" using (funcT($2)):(K($6,($7-$6),($5-$4),$4)) title "K" with lines lw 2 lc rgb "red"
 
 
 

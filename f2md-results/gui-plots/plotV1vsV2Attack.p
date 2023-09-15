@@ -15,10 +15,10 @@ func3(x,y) = x
 
 stats "AppV1.dat" using (lastV1=func3($6,$7)) nooutput
 stats "AppV2.dat" using (lastV2=func3($6,$7)) nooutput
-stats "AppV1.dat" using (FNV1=($7-$6)) nooutput
-stats "AppV2.dat" using (FNV2=($7-$6)) nooutput
-set label sprintf("V1 = %3.10g-%3.10gmsg \nV2 = %3.10g-%3.10gmsg",lastV1, FNV1, lastV2, FNV2) at graph 0.02,0.95 tc rgb '#00bb00'
+# stats "AppV1.dat" using (FNV1=($7-$6)) nooutput
+# stats "AppV2.dat" using (FNV2=($7-$6)) nooutput
+set label sprintf("Total = %3.10g-%3.10gmsg",lastV1, FNV1) at graph 0.02,0.95 tc rgb ARG1
 
-plot "AppV2.dat" using (funcT($2)):(func3($6,$7)) title 'V2 True Positive' with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "#009000",\
-"AppV1.dat" using (funcT($2)):(func3($6,$7)) title 'V1 True Positive' with lines lw 2 lc rgb "#CD853F"
+# "AppV2.dat" using (funcT($2)):(func3($6,$7)) title 'V2 True Positive' with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "#009000"
+plot "AppV1.dat" using (funcT($2)):(func3($6,$7)) title 'True Positive' with lines lw 2 lc rgb "#CD853F"
 

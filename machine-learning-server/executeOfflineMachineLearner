@@ -1,0 +1,10 @@
+#!/bin/bash
+# if [ -f "MLOfflineTrainer.py" ] && [ -f "requirements.txt" ] && [ -f "save/valueSave_SVM_together.listpkl" ] && [ -f "save/targetSave_SVM_together.listpkl" ];
+#if [ -e "MLOfflineTrainer.py" ] && [ -e "requirements.txt" ] && [ -e "/saveFile/saveFile_D60_Legacy_V1/valuesSave_SVM_together.listpkl" ] && [ -e "/saveFile/saveFile_D60_Legacy_V1/targetSave_SVM_together.listpkl" ];
+ # then
+    echo "Installing necessary python libraries and executing training"
+    pip install -r requirements.txt
+    python3 MLOfflineTrainer.py
+#else
+#    echo "Some files are missing"
+#fi

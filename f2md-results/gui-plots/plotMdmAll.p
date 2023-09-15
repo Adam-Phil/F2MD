@@ -14,10 +14,13 @@ funcT(x) = x / 60
 #func3(x,y) = y<=0  ? 0 : 100*x / y
 func3(x,y) = x
 
-plot "AppV1Inst.dat" using (funcT($2)):(func3($4,$5)) title 'V1 False Positive Inst' ps 0.5 lc rgb "magenta" , \
- "AppV1Inst.dat" using (funcT($2)):(func3($6,$7)) title 'V1 True Positive Inst' ps 0.5 lc rgb "#CD853F", \
- "AppV2Inst.dat" using (funcT($2)):(func3($4,$5)) title 'V2 False Positive Inst'  ps 0.5 lc rgb "#4dbeee" , \
- "AppV2Inst.dat" using (funcT($2)):(func3($6,$7)) title 'V2 True Positive Inst' ps 0.5 lc rgb "#009000"  
+    plot "AppV1Inst.dat" using (funcT($2)):(func3($4,$5)) title 'False Positive Inst' ps 0.5 lc rgb "magenta" , \
+ "AppV1Inst.dat" using (funcT($2)):(func3($6,$7)) title 'True Positive Inst' ps 0.5 lc rgb "#CD853F"
+
+
+# "AppV2Inst.dat" using (funcT($2)):(func3($4,$5)) title 'V2 False Positive Inst'  ps 0.5 lc rgb "#4dbeee" , \
+# "AppV2Inst.dat" using (funcT($2)):(func3($6,$7)) title 'V2 True Positive Inst' ps 0.5 lc rgb "#009000" 
+
 
 #plot "AppV1.dat" using (funcT($2)):(func3($4,$5)) title 'V1 False Positive' with lines lw 3 lc rgb "magenta" , \
 # "AppV1Inst.dat" using (funcT($2)):(func3($4,$5)) title 'V1 False Positive Inst' ps 0.5 lc rgb "magenta" , \

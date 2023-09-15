@@ -34,11 +34,11 @@ FB(x,y) = 2*(x*y)/(x+y)
 ACC(a,b,c,d) = (a+b)/(b+b+c+d)
 
 stats "AppV1.dat" using (lastV1=TPR($6,($7-$6))) nooutput
-stats "AppV2.dat" using (lastV2=TPR($6,($7-$6))) nooutput
-set label sprintf("V1 = %3.5g \nV2 = %3.5g",lastV1, lastV2) at graph 0.02,0.1 tc rgb '#000000'
+# stats "AppV2.dat" using (lastV2=TPR($6,($7-$6))) nooutput
+set label sprintf("Last = %3.5g",lastV1) at graph 0.02,0.05 tc rgb '#000000'
 
-plot "AppV2.dat" using (funcT($2)):(TPR($6,($7-$6))) title "V2 Sensitivity" with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "blue",\
-"AppV1.dat" using (funcT($2)):(TPR($6,($7-$6))) title "V1 Sensitivity" with lines lw 2 lc rgb "red" 
+# "AppV2.dat" using (funcT($2)):(TPR($6,($7-$6))) title "V2 Sensitivity" with linespoints linestyle 2 lw 2 pi 30 ps 0.75 lc rgb "blue"
+plot "AppV1.dat" using (funcT($2)):(TPR($6,($7-$6))) title "Sensitivity" with lines lw 2 lc rgb "red" 
 
 #"AppV1Inst.dat" using (funcT($2)):(TPR($6,($7-$6))) title "V1 Sensitivity Inst" ps 0.5 lc rgb "red",\
 #"AppV2Inst.dat" using (funcT($2)):(TPR($6,($7-$6))) title "V2 Sensitivity Inst" ps 0.5 lc rgb "blue"

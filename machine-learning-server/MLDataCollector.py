@@ -11,20 +11,21 @@
  *******************************************************************************/
 """
 
-import os
-import json
-import numpy as np
-from tqdm import tqdm
 import pickle
+import datetime
+import os
+
+check_type = "Catch"
 
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
+		print("initializing data collector")
 		self.initValuesData = False
-		self.ValuesData = []
-		self.TargetData = []
+		self.valuesData = []
+		self.targetData = []
 
 		self.curDateStr = ''
-
+		self.AIType = ""
 		self.savePath = ''
 
 	def setCurDateSrt(self, datastr):
@@ -33,40 +34,56 @@ class MlDataCollector:
 	def setSavePath(self, datastr):
 		self.savePath = datastr
 	
-	def saveData(self, it_num):
-		with open(self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
-			pickle.dump(self.ValuesData, fp)
-		with open(self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
-			pickle.dump(self.TargetData, ft)
+	def setAIType(self, AIType):
+		if "SVM" in AIType:
+			self.AIType = "SVM"
+		elif "LSTM" in AIType:
+			self.AIType = "LSTM"
+		elif "MLP" in AIType:
+			if "L1N25" in AIType:
+				self.AIType = "MLP_L1N25"
+			elif "L3N25" in AIType:
+				self.AIType = "MLP_L3N25"
+			else:
+				raise ValueError("Unknown MLP type")
+		else:
+			raise ValueError("Unknown AIType")
 
-	def loadData(self):
-		with open (self.savePath+'/valuesSave_'+self.curDateStr+'.listpkl', 'rb') as fp:
-			self.ValuesData = pickle.load(fp)
-		with open (self.savePath+'/targetSave_'+self.curDateStr +'.listpkl', 'rb') as ft:
-			self.TargetData = pickle.load(ft)
-
+	def saveData(self):
+		# print("Values Data to save: " + str(self.valuesData))
+		# print("Target Data to save: " + str(self.targetData))
+		complete_save_path = self.savePath+"/" + check_type +'_Checks_Data/' + self.AIType
+		if not (os.path.exists(complete_save_path) and os.path.isdir(complete_save_path)):
+			os.mkdirs(complete_save_path)
+		self.curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+		with open(complete_save_path + '/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
+			pickle.dump(self.valuesData, fp)
+		with open(complete_save_path + '/targetSave_'+self.curDateStr +'.listpkl', 'wb') as ft:
+			pickle.dump(self.targetData, ft)
+		self.valuesData = []
+		self.targetData = []
 
 	def prepare_arrays(self):
-		if isinstance(self.ValuesData[0], list):
-			for i in range(0,len(self.ValuesData)):
-				self.ValuesData[i] = np.array(self.ValuesData[i])
+		if isinstance(self.valuesData[0], list):
+			for i in range(0,len(self.valuesData)):
+				self.valuesData[i] = self.valuesData[i]
 		else:
-			self.ValuesData = np.array(self.ValuesData)
-		self.TargetData = np.array(self.TargetData)
-
-        
+			self.valuesData = self.valuesData
+		self.targetData = self.targetData
 
 	def collectData(self,bsmArray):
 		if not self.initValuesData:
 			self.initValuesData = True
 			if isinstance(bsmArray[0], list):
 				for i in range(0,len(bsmArray[0])):
-					self.ValuesData.append([])
-
+					self.valuesData.append([])
 		if isinstance(bsmArray[0], list):
 			for i in range(0,len(bsmArray[0])):
-				self.ValuesData[i].append(bsmArray[0][i])
+				self.valuesData[i].append(bsmArray[0][i])
 		else:
-			self.ValuesData.append(bsmArray[0])
-		self.TargetData.append(bsmArray[1])
+			self.valuesData.append(bsmArray[0])
+		self.targetData.append(bsmArray[1])
+		# print("Collecting Data done!")
+		# print("Values Data: " + str(self.valuesData))
+		# print("Target Data: " + str(self.targetData))
 
