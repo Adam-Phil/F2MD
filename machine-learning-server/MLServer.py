@@ -35,11 +35,14 @@ def make_handler(ml_type):
 			self.end_headers()
 
 		def do_GET(self):
-			print("did Get Request")
-			self.wfile.write("Get Request".encode('utf-8'))
+			self.wfile.write(ml_type.encode('utf-8'))
 
 		def do_HEAD(self):
 			self._set_headers()
+
+		def do_PUT(self):
+			self.globalMlMain.setCheckType(self.path)
+			self.wfile.write("Successful PUT".encode('utf-8'))
 
 		def do_POST(self):
 			'''

@@ -75,6 +75,9 @@ class MlMain:
     stats = MlStats()
     varthrelite = MlVarThresholdLite()
 
+    def setChecktype(bsmJsonString):
+        print(bsmJsonString)
+
     def init(self, AIType):
         self.le.fit(self.labels_legacy)
 
