@@ -15,8 +15,21 @@ import pickle
 import datetime
 import os
 
+def deepMkDir(path):
+	splitted_path = path.split("/")
+	if path.startswith("/"):
+		existent_path = ""
+	elif path.startswith("."):
+		existent_path = "."
+	else:
+		raise ValueError("Please give a right path for deepMkDir")
+	for single in splitted_path:
+		existent_path = existent_path + "/" + single
+		if not (os.path.exists(existent_path) and os.path.isdir(existent_path)):
+			os.mkdir(existent_path)
+
 class MlDataCollector:
-	def __init__(self, *args, **kwargs):
+	def __init__(self):
 		print("initializing data collector")
 		self.initValuesData = False
 		self.valuesData = []
@@ -50,9 +63,9 @@ class MlDataCollector:
 	def saveData(self, check_type):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
-		complete_save_path = self.savePath+"/" + check_type +'_Checks_Data/' + self.AIType
+		complete_save_path = self.savePath+"/data/" + check_type +'_Checks_Data/' + self.AIType
 		if not (os.path.exists(complete_save_path) and os.path.isdir(complete_save_path)):
-			os.mkdirs(complete_save_path)
+			deepMkDir(complete_save_path)
 		self.curDateStr = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 		with open(complete_save_path + '/valuesSave_'+self.curDateStr+'.listpkl', 'wb') as fp:
 			pickle.dump(self.valuesData, fp)

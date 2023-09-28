@@ -219,7 +219,7 @@ class MlMain:
         return returnArray
 
     def trainedModelExists(self, AIType):
-        filesNames = [f for f in listdir(self.savePath) if isfile(join(self.savePath, f))]
+        filesNames = [f for f in listdir(self.savePath+"clfs/") if isfile(join(self.savePath+"clfs/", f))]
         print("trainedModelExists?")
 
         for s in filesNames:
