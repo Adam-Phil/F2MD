@@ -31,10 +31,18 @@ clf = None
 RTtrain = False
 RTsave = True
 
+time_based_save = True
+lower_bounds = [25200,50400]
+upper_bounds = [32400,57600]
+
 Positive_Threshold = 0.5
 
 RTFilterTime = 100
 RTFilterKeepTime = 600
+
+def saveJson(bsmJsonString):
+    with open ("sample.json","w") as file:
+        json.dump(bsmJsonString,file)
 
 class MlMain:
     initiated = False
@@ -77,6 +85,15 @@ class MlMain:
         self.trainer.setAIType(AIType)
         self.trainedModelExists(AIType)
 
+    def checkData(self, bsmJsom):
+        generationTime = bsmJsom['BsmPrint']['Metadata']['generationTime']
+        for i in range(len(lower_bounds)):
+            low = lower_bounds[i]
+            upp = upper_bounds[i]
+            if generationTime >= low and generationTime <= upp:
+                return True
+        return False
+
     def mlMain(self, bsmJsonString, AIType):
         if not self.initiated:
             self.init(AIType)
@@ -85,16 +102,20 @@ class MlMain:
         start_time = time.time()
 
         bsmJsom = json.loads(bsmJsonString)
+        # saveJson(bsmJsom)
         curArray = self.getNodeArray(bsmJsom,AIType)
+        # print(RTsave)
         if RTsave:
             if self.collectDur < self.deltaCall:
+                # print(self.collectDur)
                 self.collectDur = self.collectDur + 1
-                self.dataCollector.collectData(curArray)
+                if self.checkData(bsmJsom):
+                    self.dataCollector.collectData(curArray)
             else :
                 print("DataSave And Training " + str(self.deltaCall) + " Started ...")
                 self.collectDur = 0
                 self.dataCollector.saveData()
-                self.inventory()
+                # self.inventory()
                 if RTtrain:
                     # print(len(self.dataCollector.valuesData))
                     self.trainer.train(self.dataCollector, self.le, self.trainedSamples)
@@ -106,16 +127,17 @@ class MlMain:
         return_value = "False"
         
         if self.clf is None:
+            # print("No clf loaded")
             return_value = "False"
             start_time_p = 0.0
             end_time_p = 0.0
         else:
+            # print("Clf judging")
             if('LSTM' in AIType): # try out if this is necessarry here
                 self.clf.reset_states()
             array_npy = np.array([curArray[0]])
             start_time_p = time.time()
             pred_array = self.clf.predict(array_npy)
-            # print(pred_array)
             end_time_p = time.time()
             gen_index = self.le.transform(['Genuine'])[0]
             if "SVM" in AIType or "MLP" in AIType:
@@ -143,6 +165,7 @@ class MlMain:
         else:
             self.printRuntimeCnt = self.printRuntimeCnt + 1
         self.numRuntime = self.numRuntime + 1
+        # print("Returning Value: " + return_value)
         return return_value    
 
     def getNodeArray(self,bsmJsom,AIType):
@@ -205,6 +228,8 @@ class MlMain:
                 # self.dataCollector.loadData() # Maybe works without this
                 #self.deltaCall = self.dataCollector.valuesCollection.shape[0]/5
                 print("Loading " + str(len(self.dataCollector.valuesData)) +  " Finished!")
+        
+        # print(self.clf.coefs_)
 
     def inventory(self):
         print("----------DataCollector----------")

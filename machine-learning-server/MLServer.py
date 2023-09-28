@@ -13,14 +13,10 @@
 """
 
 try:
-    import SocketServer as socketserver
     from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 except ImportError:
-    import socketserver
     from http.server import HTTPServer, BaseHTTPRequestHandler
 from MLMain import MlMain
-from os import listdir
-from os.path import isfile, join
 
 version = 'NOVER'
 
@@ -39,6 +35,7 @@ def make_handler(ml_type):
 			self.end_headers()
 
 		def do_GET(self):
+			print("did Get Request")
 			self.wfile.write("Get Request".encode('utf-8'))
 
 		def do_HEAD(self):
