@@ -59,6 +59,7 @@ class MlMain:
 
     clf = None
     savePath = './saveFile'
+    check_type = ""
 
     meanRuntime = 0
     meanRuntime_p = 0
@@ -75,8 +76,9 @@ class MlMain:
     stats = MlStats()
     varthrelite = MlVarThresholdLite()
 
-    def setChecktype(bsmJsonString):
-        print(bsmJsonString)
+    def setCheckType(self, bsmJsonString):
+        self.check_type = bsmJsonString[:-6]
+        print("Set Check Type to: " + self.check_type)
 
     def init(self, AIType):
         self.le.fit(self.labels_legacy)
@@ -117,7 +119,7 @@ class MlMain:
             else :
                 print("DataSave And Training " + str(self.deltaCall) + " Started ...")
                 self.collectDur = 0
-                self.dataCollector.saveData()
+                self.dataCollector.saveData(self.check_type)
                 # self.inventory()
                 if RTtrain:
                     # print(len(self.dataCollector.valuesData))

@@ -15,8 +15,6 @@ import pickle
 import datetime
 import os
 
-check_type = "Catch"
-
 class MlDataCollector:
 	def __init__(self, *args, **kwargs):
 		print("initializing data collector")
@@ -49,7 +47,7 @@ class MlDataCollector:
 		else:
 			raise ValueError("Unknown AIType")
 
-	def saveData(self):
+	def saveData(self, check_type):
 		# print("Values Data to save: " + str(self.valuesData))
 		# print("Target Data to save: " + str(self.targetData))
 		complete_save_path = self.savePath+"/" + check_type +'_Checks_Data/' + self.AIType
