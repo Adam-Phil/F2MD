@@ -263,7 +263,7 @@ fi
 
 # Install F2MD
 cd ${INSTALL_DIR}/
-git clone --recurse-submodules https://github.com/Adam-Phil/F2MD
+git clone --recurse-submodules https://github.com/Adam-Phil/F2MD.git
 # Build inet
 cd ${INSTALL_DIR}/F2MD/inet
 export INET_ROOT=${INSTALL_DIR}/F2MD/inet
