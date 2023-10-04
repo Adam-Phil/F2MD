@@ -261,6 +261,9 @@ then
     ./configure WITH_OSGEARTH=no WITH_OSG=no && make -j$(nproc)
 fi
 
+git config --global http.postBuffer 524288000
+git config --global http.pullBuffer 524288000
+
 # Install F2MD
 cd ${INSTALL_DIR}/
 git clone --recurse-submodules https://github.com/Adam-Phil/F2MD.git
