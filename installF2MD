@@ -299,6 +299,6 @@ cd ${INSTALL_DIR}/F2MD/veins-f2md/subprojects/veins_inet3
 cd ${INSTALL_DIR}/F2MD/simulte-f2md
 make makefiles && make -j$(nproc) MODE=release all
 
-pip3 install scikit-learn sklearn keras seaborn joblib tensorflow tqdm
+pip3 install scikit-learn keras seaborn joblib tensorflow tqdm
 
 printf "\nThe installation is complete, you can now run a scenario using the ./F2MD/runScenario.sh\n"
