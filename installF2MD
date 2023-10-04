@@ -261,8 +261,8 @@ then
     ./configure WITH_OSGEARTH=no WITH_OSG=no && make -j$(nproc)
 fi
 
-git config --global http.postBuffer 80524288000
-git config --global http.pullBuffer 80524288000
+git config --global http.postBuffer 32524288000
+git config --global http.pullBuffer 32524288000
 
 # Install F2MD
 cd ${INSTALL_DIR}/
