@@ -6,4 +6,4 @@
 	url = https://github.com/inet-framework/inet.git
 [submodule "simulte-f2md"]
 	path = simulte-f2md
-	url = https://github.com/josephkamel/simulte-f2md.git
+	url = https://github.com/Adam-Phil/simulte-f2md.git
