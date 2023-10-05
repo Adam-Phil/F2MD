@@ -266,13 +266,20 @@ git config --global http.pullBuffer 40524288000
 
 # Install F2MD
 cd ${INSTALL_DIR}/
-git clone --recurse-submodules https://github.com/Adam-Phil/F2MD.git
+git clone https://github.com/Adam-Phil/F2MD.git
+
+cd ${INSTALL_DIR}/F2MD/
+
+git submodule init
+git submodule update
+
 # Build inet
 cd ${INSTALL_DIR}/F2MD/inet
 export INET_ROOT=${INSTALL_DIR}/F2MD/inet
 
 if ! grep -Fq 'INET_ROOT' $HOME/.bashrc
 then
+    printf '\n-------Getting there--------\n' 
     echo ' ' >> $HOME/.bashrc
     echo '# set INET variables' >> $HOME/.bashrc
     echo "if [ -d \"$INSTALL_DIR/F2MD/inet\" ] ; then" >> $HOME/.bashrc
