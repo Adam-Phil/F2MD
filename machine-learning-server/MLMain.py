@@ -13,9 +13,10 @@
 
 from os import listdir
 from os.path import isfile, join
+import os
 import json
 import numpy as np
-from MLDataCollector import MlDataCollector
+from MLDataCollector import MlDataCollector, deepMkDir
 from MLNodeStorage import MlNodeStorage
 from MLTrainer import MlTrainer
 import datetime
@@ -82,6 +83,16 @@ class MlMain:
 
     def init(self, AIType):
         self.le.fit(self.labels_legacy)
+
+        clf_path = self.savePath + "/clfs"
+        if not (os.path.exists(clf_path) and os.path.isdir(clf_path)):
+            deepMkDir(clf_path)
+        data_path = self.savePath + "/data"
+        if not (os.path.exists(data_path) and os.path.isdir(data_path)):
+            deepMkDir(data_path)
+        concat_data_path = self.savePath + "/concat_data"
+        if not (os.path.exists(concat_data_path) and os.path.isdir(concat_data_path)):
+            deepMkDir(concat_data_path)
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
         self.dataCollector.setSavePath(self.savePath)
@@ -219,7 +230,7 @@ class MlMain:
         return returnArray
 
     def trainedModelExists(self, AIType):
-        filesNames = [f for f in listdir(self.savePath+"clfs/") if isfile(join(self.savePath+"clfs/", f))]
+        filesNames = [f for f in listdir(self.savePath+"/clfs/") if isfile(join(self.savePath+"/clfs/", f))]
         print("trainedModelExists?")
 
         for s in filesNames:
