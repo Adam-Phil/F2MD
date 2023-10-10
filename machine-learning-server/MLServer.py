@@ -21,7 +21,7 @@ from MLMain import MlMain
 version = 'NOVER'
 
 
-def make_handler(ml_type):
+def make_handler(ml_type, save_data):
 	class S(BaseHTTPRequestHandler):
 		globalMlMain = MlMain()
 
@@ -52,16 +52,22 @@ def make_handler(ml_type):
 			#requestStr = urllib2.unquote((self.path));
 			#requestStr = unquote(self.path)
 
-			pred = self.globalMlMain.mlMain(self.path, ml_type)
+			pred = self.globalMlMain.mlMain(self.path, ml_type, save_data)
 
 			# the response
 			self.wfile.write(pred.encode('utf-8'))
 	return S
 
 
-def run(ml_type, server_class=HTTPServer, port=9997):
+def run(ml_type, save_data, server_class=HTTPServer, port=9997):
 	server_address = ('', port)
-	httpd = server_class(server_address, make_handler(ml_type=ml_type))
+	if (int(save_data) == 0):
+		save_data = False
+	elif (int(save_data) == 1):
+		save_data = True
+	else:
+		raise ValueError("Save Data Parameter needs to be 0 or 1")
+	httpd = server_class(server_address, make_handler(ml_type=ml_type, save_data=save_data))
 	print('Starting MLServer...')
 	print('Listening on port ' + str(port))
 	httpd.serve_forever()
@@ -70,9 +76,9 @@ def run(ml_type, server_class=HTTPServer, port=9997):
 
 if __name__ == "__main__":
 	from sys import argv
-	if len(argv) == 3:
-		run(ml_type=argv[2], port=int(argv[1]))
-	elif len(argv) == 2:
-		run(ml_type=argv[2], port=int(argv[1]))
+	if len(argv) == 4:
+		run(ml_type=argv[2], save_data=argv[3], port=int(argv[1]))
+	elif len(argv) == 3:
+		run(ml_type=argv[2], save_data=argv[3], port=int(argv[1]))
 	else:
 		print('not enough argv')

@@ -30,7 +30,6 @@ import time
 
 clf = None
 RTtrain = False
-RTsave = True
 
 time_based_save = True
 lower_bounds = [25200, 50400]
@@ -97,9 +96,9 @@ class MlMain:
         if not (os.path.exists(concat_data_path) and os.path.isdir(concat_data_path)):
             deepMkDir(concat_data_path)
 
-    def init(self, AIType):
+    def init(self, AIType, RTsave):
         self.le.fit(self.labels_legacy)
-
+        self.RTsave = RTsave
         self.create_save_folders()
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
@@ -129,7 +128,7 @@ class MlMain:
         # saveJson(bsmJsom)
         curArray = self.getNodeArray(bsmJsom, AIType)
         # print(RTsave)
-        if RTsave:
+        if self.RTsave:
             if self.collectDur < self.deltaCall:
                 # print(self.collectDur)
                 self.collectDur = self.collectDur + 1
