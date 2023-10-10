@@ -4,8 +4,8 @@ tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
 tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${1} ${2}; bash -i"
 tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
 tmux send-keys -t F2MD:2 "2" Enter
-python3 change-ini-params "${3}" "${4}" "${5}"
-sleep 70
+python3 /F2MD/change-ini-params.py "${3}" "${4}" "${5}"
+sleep 10
 tmux set-window-option -g remain-on-exit off
 tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario; bash -i" 
 tmux send-keys -t F2MD:3 "${3}" Enter
