@@ -1,0 +1,282 @@
+#!/bin/bash
+
+package="executeF2MD"
+HELP="\n$HELP $package - used to automatically execute F2MD (if it was installed correctly previously)\n"
+HELP="$HELP \n"
+HELP="$HELP $package [options]\n"
+HELP="$HELP \n"
+HELP="$HELP options:\n"
+HELP="$HELP -h,  --help                              show brief help\n"
+HELP="$HELP -s,  --scenario SCENARIO                 set this flag to automatically install sumo\n"
+HELP="$HELP -a,  --app-type APP_TYPE                 specify the version of sumo to install\n"
+HELP="$HELP -c,  --check-type CHECK_TYPE             set this flag to automatically install omnetpp\n"
+HELP="$HELP -ml, --ml-type ML_TYPE                   specify the type of machine learning to be used if an\n"
+HELP="$HELP -sa,  --save-data SAVE_DATA               specify the version of omnetpp to install\n"
+
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+case $key in
+    -h|--help)
+    printf "$HELP"
+    exit 0
+    shift # past argument
+    shift # past value
+    ;;
+    -s|--scenario)
+    SCENARIO="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -a|--app-type)
+    APP_TYPE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -c|--check-type)
+    CHECK_TYPE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -ml|--ml-type)
+    ML_TYPE="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -sa|--save-data)
+    SAVE_DATA="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if [[ $SCENARIO == "" ]]
+then
+    PS3='Please chose a scenario: '
+    options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario")
+    select opt_net in "${options_net[@]}"
+    do
+        case $opt_net in
+            "IRTSystemXScenario")
+                echo
+                echo "you chose choice $REPLY which is $opt_net"
+                SCENARIO=1 
+                break
+                ;;
+            "LuSTNanoScenario")
+                echo
+                echo "you chose choice $REPLY which is $opt_net"
+                SCENARIO=2 
+                break
+                ;;
+            "LuSTMiniScenario")
+                echo
+                echo "you chose choice $REPLY which is $opt_net"
+                SCENARIO=3 
+                break
+                ;;
+            "LuSTScenario")
+                echo
+                echo "you chose choice $REPLY which is $opt_net"
+                SCENARIO=4 
+                break
+                ;;
+            "UlmScenario")
+                echo
+                echo "you chose choice $REPLY which is $opt_net"
+                SCENARIO=5 
+                break
+                ;;
+            *) echo
+                echo "invalid option $REPLY"
+                exit 1            
+                ;;
+        esac
+    done
+fi
+
+if [[ $APP_TYPE == "" ]]
+then
+    PS3='Please chose a app to be used for misbehavior detection: '
+    options_app=("ThresholdApp" "AggregationApp" "BehavioralApp" "ExperiApp" "CooperativeApp" "MachineLearningApp")
+    select opt_app in "${options_app[@]}"
+    do
+        case $opt_app in
+            "ThresholdApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=0 
+                break
+                ;;
+            "AggregationApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=1 
+                break
+                ;;
+            "BehavioralApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=2 
+                break
+                ;;
+            "ExperiApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=3 
+                break
+                ;;
+            "CooperativeApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=4 
+                break
+                ;;
+            "MachineLearningApp")
+                echo
+                echo "you chose choice $REPLY which is $opt_app"
+                APP_TYPE=5
+                break
+                ;;
+            *) echo
+                echo "invalid option $REPLY"
+                exit 1            
+                ;;
+        esac
+    done
+fi
+
+if [[ $CHECK_TYPE == "" ]]
+then
+    PS3='Please chose a type of plausibility detectors: '
+    options_check=("LegacyChecks" "CaTChChecks" "ExperiChecks")
+    select opt_check in "${options_check[@]}"
+    do
+        case $opt_check in
+            "LegacyChecks")
+                echo
+                echo "you chose choice $REPLY which is $opt_check"
+                CHECK_TYPE=1 
+                break
+                ;;
+            "CaTChChecks")
+                echo
+                echo "you chose choice $REPLY which is $opt_check"
+                CHECK_TYPE=2 
+                break
+                ;;
+            "ExperiChecks")
+                echo
+                echo "you chose choice $REPLY which is $opt_check"
+                CHECK_TYPE=3 
+                break
+                ;;
+            *) echo
+                echo "invalid option $REPLY"
+                exit 1            
+                ;;
+        esac
+    done
+fi
+
+if [[ $APP_TYPE != 5 ]]
+then
+    echo "Starting F2MD without Machine Learning as you choose the app ${APP_TYPE}"
+    tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
+    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
+    tmux send-keys -t F2MD:1 "1" Enter
+    python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}"
+    sleep 5
+    tmux set-window-option -g remain-on-exit off
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario; bash -i" 
+    tmux send-keys -t F2MD:2 "${SCENARIO}" Enter
+    tmux send-keys -t F2MD:2 "1" Enter
+    tmux send-keys -t F2MD:2 "1" Enter
+    tmux attach -t F2MD:2
+else
+    if [[ $ML_TYPE == "" ]]
+    then
+        PS3='Please chose a type of ML algorithm: '
+        options_ml=("SVM_SINGLE" "MLP_SINGLE_L1N25" "MLP_SINGLE_L3N25" "LSTM_RECURRENT")
+        select opt_ml in "${options_ml[@]}"
+        do
+            case $opt_ml in
+                "SVM_SINGLE")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_ml"
+                    ML_TYPE="SVM_SINGLE" 
+                    break
+                    ;;
+                "MLP_SINGLE_L1N25")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_ml"
+                    ML_TYPE="MLP_SINGLE_L1N25" 
+                    break
+                    ;;
+                "MLP_SINGLE_L3N25")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_ml"
+                    ML_TYPE="MLP_SINGLE_L3N25" 
+                    break
+                    ;;
+                "LSTM_RECURRENT")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_ml"
+                    ML_TYPE="LSTM_RECURRENT" 
+                    break
+                    ;;
+                *) echo
+                    echo "invalid option $REPLY"
+                    exit 1            
+                    ;;
+            esac
+        done
+    fi
+
+    if [[ $SAVE_DATA == "" ]]
+    then
+        PS3='Please choose if you need to save the data or not: '
+        options_save=("Save Data" "Don't Save")
+        select opt_save in "${options_save[@]}"
+        do
+            case $opt_save in
+                "Save Data")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_save"
+                    SAVE_DATA=1
+                    break
+                    ;;
+                "Don't Save")
+                    echo
+                    echo "you chose choice $REPLY which is $opt_save"
+                    SAVE_DATA=0
+                    break
+                    ;;
+                *) echo
+                    echo "invalid option $REPLY"
+                    exit 1            
+                    ;;
+            esac
+        done
+    fi
+    echo "Starting F2MD with Machine Learning: ${ML_TYPE}"
+    tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
+    tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA}; bash -i"
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
+    tmux send-keys -t F2MD:2 "2" Enter
+    python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}"
+    sleep 70
+    tmux set-window-option -g remain-on-exit off
+    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario; bash -i" 
+    tmux send-keys -t F2MD:3 "${SCENARIO}" Enter
+    tmux send-keys -t F2MD:3 "1" Enter
+    tmux send-keys -t F2MD:3 "1" Enter
+    tmux attach -t F2MD:3
+fi
