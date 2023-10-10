@@ -30,7 +30,7 @@ def change_content_according_to_params(content,app,check):
     substituted_app = substitute_first_by_int(content_list[1],app)
     content_list = [content_list[0], substituted_app]
     new_content = content_list[0] + "appTypeV1" + content_list[1]
-    print(new_content)
+    # print(new_content)
     return new_content
 
 if __name__ == "__main__":
