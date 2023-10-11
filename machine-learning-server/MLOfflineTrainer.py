@@ -7,12 +7,16 @@ if __name__ == "__main__":
     from keras.layers import Dense, LSTM
     from keras.callbacks import ReduceLROnPlateau
     from keras.utils import to_categorical
-    from MLDatasetCollection import determineCurrentCheckVersion
+    from MLDatasetCollection import determineCurrentCheckVersion, model_name_to_number
     import numpy as np
     import joblib
     import pickle
     import sys
-    model = int(sys.argv[1])
+    model = sys.argv[1]
+    if model.isdigit():
+        model = int(model)
+    else:
+        model = model_name_to_number(model_name=model)
     partition = sys.argv[3]
     checkVersion = determineCurrentCheckVersion(int(sys.argv[2]))
     extra = "_30_n_iter_100_relu_lbfgs"

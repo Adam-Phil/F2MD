@@ -5,7 +5,37 @@ from tqdm import tqdm
 import sys
 
 
-def determineCurrentModel(model):
+def model_name_to_short(model_name):
+    if "SVM" in model_name:
+        return "SVM"
+    elif "MLP" in model_name:
+        if "L1N25" in model_name:
+            return "MLP_L1N25"
+        elif "L3N25" in model_name:
+            return "MLP_L3N25"
+        else:
+            raise ValueError("Not suitable model")
+    elif "LSTM" in model_name:
+        return "LSTM"
+    else:
+        raise ValueError("Not suitable model")
+    
+def model_name_to_number(model_name):
+    if "SVM" in model_name:
+        return 1
+    elif "MLP" in model_name:
+        if "L1N25" in model_name:
+            return 2
+        elif "L3N25" in model_name:
+            return 3
+        else:
+            raise ValueError("Not suitable model")
+    elif "LSTM" in model_name:
+        return 4
+    else:
+        raise ValueError("Not suitable model")
+
+def number_to_model_name(model):
     if model == 1:
         return "SVM"
     elif model == 2:
@@ -79,11 +109,15 @@ def main():
     partition_numbers = 10
     # partitions = [(h+1)/partition_numbers for h in range(partition_numbers)]
     partitions = [1.0]
-    model = int(sys.argv[1])
+
+    model = sys.argv[1]
     if model == 1:
         partitions = [round(elem / 10, 2) for elem in partitions]
     savePath = "/F2MD/machine-learning-server"
-    currentModel = determineCurrentModel(model)
+    if model.isdigit():
+        currentModel = number_to_model_name(int(model))
+    else:
+        currentModel = model_name_to_short(model)
     checkVersion = determineCurrentCheckVersion(int(sys.argv[2]))
     loadPath = (
         savePath
