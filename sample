@@ -189,34 +189,16 @@ fi
 
 if [[ $ATTACKER_DENSITY == "" ]]
 then
-    PS3='Please choose an attacker density (as percent number or float between 0 and 1): '
-    select opt_check in "${options_check[@]}"
-    do
-        case $opt_check in
-            "LegacyChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=1 
-                break
-                ;;
-            "CaTChChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=2 
-                break
-                ;;
-            "ExperiChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=3 
-                break
-                ;;
-            *) echo
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
-        esac
-    done
+    read -r -p "Please choose an attacker density (as percent number or float between 0 and 1): " ATTACKER_DENSITY
+    if awk -v number="$test" 'END { exit !( \
+        number !~ /[^0-9.]/ && number !~ /\..*\./ && \
+        number > 100 || number < 0) }' /dev/null
+    then
+        echo "${ATTACKER_DENSITY} is out of bounds"
+        exit 1
+    fi
+fi
+
 fi
 
 if [[ $APP_TYPE != 5 ]]
