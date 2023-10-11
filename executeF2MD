@@ -12,7 +12,7 @@ HELP="$HELP -a,  --app-type APP_TYPE                    specify the app to detec
 HELP="$HELP -c,  --check-type CHECK_TYPE                specify the type of plausibility detectors to use\n"
 HELP="$HELP -ad, --attacker-density ATTACKER_DENSITY    set the attacker density of the model\n"
 HELP="$HELP -ml, --ml-type ML_TYPE                      specify the type of machine learning to be used if an\n"
-HELP="$HELP -sa, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
+HELP="$HELP -sd, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -50,7 +50,7 @@ case $key in
     shift # past argument
     shift # past value
     ;;
-    -sa|--save-data)
+    -sd|--save-data)
     SAVE_DATA="$2"
     shift # past argument
     shift # past value
