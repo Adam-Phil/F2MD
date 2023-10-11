@@ -63,7 +63,7 @@ if __name__ == "__main__":
         print("Starting machine learning: MLP_L3N25")
         clf.fit(X, y)
         print("Machine Learning done; saving model")
-        joblib.dump(clf, savePath + '/clfs/clf_MLP_SINGLE_L3N25_' + checkVersion + "_" + partition + extra + ".pkl")
+        joblib.dump(clf, savePath + '/clfs/clf_MLP_SINGLE_L3N25_' + checkVersion + "_" + partition + ".pkl")
     elif model == 4:
         print("Starting Data Loading; Partition: " + checkVersion + "_" + partition)
         with open (savePath+'/concat_data/'+"valuesSave_LSTM_" + checkVersion + "_" + partition + ".listpkl", 'rb') as fp:
