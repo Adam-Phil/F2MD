@@ -5,3 +5,4 @@ tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./testExec_Server; bash -i"
 sleep 5
 tmux set-window-option -g remain-on-exit off
 tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./testExec_Client; bash -i" 
+tmux attach -t F2MD:2
