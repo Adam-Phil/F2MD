@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "This is a very awesome programm"
+echo "This was your input: $1"
+/F2MD/testExec $1
+sleep 10
+pwd
+ls
+touch /F2MD/awesome-program.txt
+ls
