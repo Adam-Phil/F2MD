@@ -1,6 +1,8 @@
 #!/bin/bash
 
-
+echo "Scenario is ${1}"
+echo "Check is ${2}"
+echo "ML Type is ${3}"
 /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -sd 1
 python3 /F2MD/machine-learning-server/MLDatasetCollection.py "${3}" "${2}"
 python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "1.0"

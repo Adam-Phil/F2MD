@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "Client Running"
+sleep 30
+echo "Stopping everything"
+if [ "$TMUX" ]; then
+    tmux kill-session -t F2MD
+fi

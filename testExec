@@ -1,9 +1,7 @@
 #!/bin/bash
 
-echo "This is a very awesome programm"
-echo "This was your input: ${1}"
-sleep 10
-pwd
-ls
-touch /F2MD/awesome-program.txt
-ls
+tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
+tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./testExec_Server; bash -i"
+sleep 5
+tmux set-window-option -g remain-on-exit off
+tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./testExec_Client; bash -i" 
