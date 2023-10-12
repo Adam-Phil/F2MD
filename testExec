@@ -1,5 +1,6 @@
 #!/bin/bash
 
 echo "This is a very awesome programm"
+echo "This was your input: ${1}"
 sleep 100
 touch awesome-program.txt
