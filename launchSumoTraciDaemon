@@ -57,10 +57,12 @@ fi
 
 if [[ "${GUI}" == "YES" ]]
 then 
+    echo "Starting Traci Deamon with gui"
     ./veins-f2md/sumo-launchd.py  -vv -c sumo-gui
 else
     if [[ "${GUI}" == "NO" ]]
     then
+        echo "Starting Traci Deamon without gui"
         ./veins-f2md/sumo-launchd.py  -vv -c sumo
     else
         echo "Something went severely wrong"

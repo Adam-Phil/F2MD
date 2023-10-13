@@ -194,6 +194,11 @@ else
     fi
 fi
 
+echo "You chose configuration:"
+echo "Scenario: ${opt_net}"
+echo "Technology: ${TECHNOLOGY} (${opt_tech})"
+echo "Environment: ${opt_sim}"
+
 cd $opt_net 
 ./run -u $opt_sim
 # Add the plotting and the renaming of the result after being done here as well
