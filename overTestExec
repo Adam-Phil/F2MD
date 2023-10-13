@@ -1,6 +1,51 @@
 #!/bin/bash
 
-/F2MD/testExec "ATTACH"
+session="F2MD"
+
+/F2MD/testExec "${1}"
+# Check if the session exists, discarding output
+# We can check $? for the exit status (zero for success, non-zero for failure)
+tmux has-session -t $session 2>/dev/null
+
+if [ $? != 0 ]; then
+    echo "Session F2MD exists"
+else
+    echo "F2MD does not exist"
+fi
+
 mv "/F2MD/awesome-program.txt" "/F2MD/awesome-program-copy.txt"
+
+# Check if the session exists, discarding output
+# We can check $? for the exit status (zero for success, non-zero for failure)
+tmux has-session -t $session 2>/dev/null
+
+if [ $? != 0 ]; then
+    echo "Session F2MD exists"
+else
+    echo "F2MD does not exist"
+fi
+
 echo "This was awesome" > "/F2MD/awesome-program-copy.txt"
-/F2MD/testExec "ATTACH"
+
+# Check if the session exists, discarding output
+# We can check $? for the exit status (zero for success, non-zero for failure)
+tmux has-session -t $session 2>/dev/null
+
+if [ $? != 0 ]; then
+    echo "Session F2MD exists"
+else
+    echo "F2MD does not exist"
+fi
+
+/F2MD/testExec "${1}"
+
+
+# Check if the session exists, discarding output
+# We can check $? for the exit status (zero for success, non-zero for failure)
+tmux has-session -t $session 2>/dev/null
+
+if [ $? != 0 ]; then
+    echo "Session F2MD exists"
+else
+    echo "F2MD does not exist"
+fi
