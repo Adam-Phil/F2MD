@@ -1,0 +1,6 @@
+#!/bin/bash
+
+/F2MD/testExec "ATTACH"
+mv "/F2MD/awesome-program.txt" "/F2MD/awesome-program-copy.txt"
+echo "This was awesome" > "/F2MD/awesome-program-copy.txt"
+/F2MD/testExec "ATTACH"
