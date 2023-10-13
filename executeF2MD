@@ -73,31 +73,31 @@ then
             "IRTSystemXScenario")
                 echo
                 echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=1 
+                SCENARIO=0 
                 break
                 ;;
             "LuSTNanoScenario")
                 echo
                 echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=2 
+                SCENARIO=1 
                 break
                 ;;
             "LuSTMiniScenario")
                 echo
                 echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=3 
+                SCENARIO=2
                 break
                 ;;
             "LuSTScenario")
                 echo
                 echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=4 
+                SCENARIO=3
                 break
                 ;;
             "UlmScenario")
                 echo
                 echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=5 
+                SCENARIO=4 
                 break
                 ;;
             *) echo
@@ -210,15 +210,11 @@ then
     echo "Plausibility Detector Type: ${CHECK_TYPE} (${opt_check})"
     echo "Attacker Density: ${ATTACKER_DENSITY}"
     tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
-    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon > traci-log.txt; bash -i"
-    tmux send-keys -t F2MD:1 "2" Enter
+    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 25
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario > run-log.txt; bash -i" 
-    tmux send-keys -t F2MD:2 "${SCENARIO}" Enter
-    tmux send-keys -t F2MD:2 "1" Enter
-    tmux send-keys -t F2MD:2 "1" Enter
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario -s "${SCENARIO}" "0" "0" > run-log.txt; bash -i" 
     tmux attach -t F2MD:2
 else
     if [[ $ML_TYPE == "" ]]
@@ -295,14 +291,10 @@ else
     echo "Saving Data: ${SAVE_DATA} (${opt_save})"
     tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
     tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} > ml-server-log.txt; bash -i"
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon > traci-log.txt; bash -i"
-    tmux send-keys -t F2MD:2 "2" Enter
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 100
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario > run-log.txt; bash -i" 
-    tmux send-keys -t F2MD:3 "${SCENARIO}" Enter
-    tmux send-keys -t F2MD:3 "1" Enter
-    tmux send-keys -t F2MD:3 "1" Enter
+    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario "${SCENARIO}" "0" "0" > run-log.txt; bash -i" 
     tmux attach -t F2MD:3
 fi
