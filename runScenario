@@ -184,7 +184,7 @@ else
     then
         opt_sim="Cmdenv"
     else
-        if [[ $ENVIRONMENT == "0" ]]
+        if [[ $ENVIRONMENT == "1" ]]
         then
             opt_sim="Qtenv"
         else
