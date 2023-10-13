@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo "Scenario is ${1}"
+echo "App is ${2}"
+echo "Check is ${3}"
+/F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5
+exit

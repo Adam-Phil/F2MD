@@ -49,3 +49,4 @@ if [ $? != 0 ]; then
 else
     echo "F2MD does not exist"
 fi
+exit

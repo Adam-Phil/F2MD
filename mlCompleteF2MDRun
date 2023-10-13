@@ -7,3 +7,4 @@ echo "ML Type is ${3}"
 python3 /F2MD/machine-learning-server/MLDatasetCollection.py "${3}" "${2}"
 python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "1.0"
 /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -sd 0
+exit
