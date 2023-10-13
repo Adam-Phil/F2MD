@@ -210,12 +210,12 @@ then
     echo "Plausibility Detector Type: ${CHECK_TYPE} (${opt_check})"
     echo "Attacker Density: ${ATTACKER_DENSITY}"
     tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
-    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
+    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon > traci-log.txt; bash -i"
     tmux send-keys -t F2MD:1 "2" Enter
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
-    sleep 5
+    sleep 25
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario; bash -i" 
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario > run-log.txt; bash -i" 
     tmux send-keys -t F2MD:2 "${SCENARIO}" Enter
     tmux send-keys -t F2MD:2 "1" Enter
     tmux send-keys -t F2MD:2 "1" Enter
@@ -294,13 +294,13 @@ else
     echo "Machine Learning Type: ${ML_TYPE}"
     echo "Saving Data: ${SAVE_DATA} (${opt_save})"
     tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
-    tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA}; bash -i"
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
+    tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} > ml-server-log.txt; bash -i"
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon > traci-log.txt; bash -i"
     tmux send-keys -t F2MD:2 "2" Enter
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 100
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario; bash -i" 
+    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario > run-log.txt; bash -i" 
     tmux send-keys -t F2MD:3 "${SCENARIO}" Enter
     tmux send-keys -t F2MD:3 "1" Enter
     tmux send-keys -t F2MD:3 "1" Enter
