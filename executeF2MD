@@ -298,7 +298,7 @@ else
     tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon; bash -i"
     tmux send-keys -t F2MD:2 "2" Enter
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
-    sleep 70
+    sleep 100
     tmux set-window-option -g remain-on-exit off
     tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario; bash -i" 
     tmux send-keys -t F2MD:3 "${SCENARIO}" Enter
