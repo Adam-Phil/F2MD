@@ -10,23 +10,59 @@ if (echo >/dev/tcp/localhost/9999) &>/dev/null
         exit 1
 fi
 
-PS3='Please chose a configuration: '
-options_sim=("With GUI" "Without GUI" )
-select opt_sim in "${options_sim[@]}"
+POSITIONAL=()
+while [[ $# -gt 0 ]]
 do
-    case $opt_sim in
-        "With GUI")
-            echo "you chose choice $REPLY which is $opt_sim"
-            ./veins-f2md/sumo-launchd.py  -vv -c sumo-gui
-            break
-            ;;
-        "Without GUI")
-            echo "you chose choice $REPLY which is $opt_sim"
-            ./veins-f2md/sumo-launchd.py  -vv -c sumo
-            break
-            ;;
-        *) echo "invalid option $REPLY"
-            exit 1            
-            ;;
-    esac
+key="$1"
+case $key in
+    -g|--gui)
+    GUI="YES"
+    shift # past argument
+    ;;
+    -ng|--no-gui)
+    GUI="NO"
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
 done
+set -- "${POSITIONAL[@]}" # restore positional parameters
+
+if [[ $GUI == "" ]]
+then
+    PS3='Please chose a configuration: '
+    options_sim=("With GUI" "Without GUI" )
+    select opt_sim in "${options_sim[@]}"
+    do
+        case $opt_sim in
+            "With GUI")
+                echo "you chose choice $REPLY which is $opt_sim"
+                GUI="YES"
+                break
+                ;;
+            "Without GUI")
+                echo "you chose choice $REPLY which is $opt_sim"
+                GUI="NO"
+                break
+                ;;
+            *) echo "invalid option $REPLY"
+                exit 1            
+                ;;
+        esac
+    done
+fi
+
+if [[ "${GUI}" == "YES" ]]
+then 
+    ./veins-f2md/sumo-launchd.py  -vv -c sumo-gui
+else
+    if [[ "${GUI}" == "NO" ]]
+    then
+        ./veins-f2md/sumo-launchd.py  -vv -c sumo
+    else
+        echo "Something went severely wrong"
+        exit 1
+fi
