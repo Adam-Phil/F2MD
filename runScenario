@@ -203,9 +203,9 @@ cd $opt_net
 ./run -u $opt_sim
 # Add the plotting and the renaming of the result after being done here as well
 
-if [ "$TMUX" ]; then
-    tmux kill-session -t F2MD
-fi
+# if [ "$TMUX" ]; then
+#    tmux kill-session -t F2MD
+# fi
 
 
 
