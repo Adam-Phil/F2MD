@@ -2,5 +2,8 @@ omnetpp-workspace/inet/*
 Programs/*
 f2md-results/*
 oldExecutionScript
-*awesome-program*
-*log
+awesome-program.txt
+awesome-program-copy.txt
+run-log.txt
+traci-log.txt
+ml-server-log.txt
