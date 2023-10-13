@@ -214,7 +214,7 @@ then
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 25
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario -s "${SCENARIO}" "0" "0" > run-log.txt; bash -i" 
+    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i" 
     tmux attach -t F2MD:2
 else
     if [[ $ML_TYPE == "" ]]
@@ -295,6 +295,6 @@ else
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 100
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario "${SCENARIO}" "0" "0" > run-log.txt; bash -i" 
+    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i" 
     tmux attach -t F2MD:3
 fi

@@ -1,3 +1,0 @@
-
-[1;31mSumo TraCI Server not running. Please run $./launchSumoTraciServer.sh [0m
-
