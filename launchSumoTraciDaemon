@@ -65,4 +65,5 @@ else
     else
         echo "Something went severely wrong"
         exit 1
+    fi
 fi
