@@ -172,19 +172,19 @@ if [[ $CHECK_TYPE == "" ]]; then
         "LegacyChecks")
             echo
             echo "you chose choice $REPLY which is $opt_check"
-            CHECK_TYPE=1
+            CHECK_TYPE=0
             break
             ;;
         "CaTChChecks")
             echo
             echo "you chose choice $REPLY which is $opt_check"
-            CHECK_TYPE=2
+            CHECK_TYPE=1
             break
             ;;
         "ExperiChecks")
             echo
             echo "you chose choice $REPLY which is $opt_check"
-            CHECK_TYPE=3
+            CHECK_TYPE=2
             break
             ;;
         *)
