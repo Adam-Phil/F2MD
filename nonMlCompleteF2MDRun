@@ -38,12 +38,11 @@ fi
 
 if [[ "${6}" == "1" ]]; then
     # Check if sessions exist and pipe the error when none exist it into the variable
-    RUNNING=(tmux has-session -t $session 2>$1)
-
+    RUNNING=$(tmux has-session -t $session 2>&1)
     while [[ $RUNNING == "" ]]; do
         echo "Running Env"
         sleep 1
-        RUNNING=(tmux has-session -t $session 2>$1)
+        RUNNING=$(tmux has-session -t $session 2>&1)
     done
 fi
 

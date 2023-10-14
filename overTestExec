@@ -32,7 +32,7 @@ echo "Second Script"
 echo "Second Waiting"
 # Check if the session exists, discarding output
 # We can check $? for the exit status (zero for success, non-zero for failure)
-SCRIPTS_RUNNING=$(tmux has-session -t $session)
+SCRIPTS_RUNNING=$(tmux has-session -t $session 2>&1)
    
 while [[ $SCRIPTS_RUNNING == "" ]]; do
     echo "Sleeping"
