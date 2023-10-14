@@ -305,19 +305,19 @@ else
         tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA}; bash -i"
     fi
     if [[ $LOGGING == "YES" ]]; then
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
+        tmux new-window -t F2MD:2 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
     else
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng; bash -i"
+        tmux new-window -t F2MD:2 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng; bash -i"
     fi
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 100
     tmux set-window-option -g remain-on-exit off
     if [[ $LOGGING == "YES" ]]; then
-        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i"
+        tmux new-window -t F2MD:3 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i"
     else
-        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0"; bash -i"
+        tmux new-window -t F2MD:3 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0"; bash -i"
     fi
     if [[ $ATTACH == "YES" ]]; then
-        tmux attach -t F2MD:2
+        tmux attach -t F2MD:3
     fi
 fi
