@@ -15,270 +15,279 @@ HELP="$HELP -ml, --ml-type ML_TYPE                      specify the type of mach
 HELP="$HELP -sd, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
 
 POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-key="$1"
-case $key in
-    -h|--help)
-    printf "$HELP"
-    exit 0
-    shift # past argument
-    shift # past value
-    ;;
-    -s|--scenario)
-    SCENARIO="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -a|--app-type)
-    APP_TYPE="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -c|--check-type)
-    CHECK_TYPE="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -ad|--attacker-density)
-    ATTACKER_DENSITY="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -ml|--ml-type)
-    ML_TYPE="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -sd|--save-data)
-    SAVE_DATA="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
-    ;;
-esac
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+    -h | --help)
+        printf "$HELP"
+        exit 0
+        shift # past argument
+        shift # past value
+        ;;
+    -s | --scenario)
+        SCENARIO="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -a | --app-type)
+        APP_TYPE="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -c | --check-type)
+        CHECK_TYPE="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -ad | --attacker-density)
+        ATTACKER_DENSITY="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -ml | --ml-type)
+        ML_TYPE="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -sd | --save-data)
+        SAVE_DATA="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -l | --logging)
+        LOGGING="YES"
+        shift # past argument
+        ;;
+    -at | --attach)
+        ATTACH="YES"
+        shift # past argument
+        ;;
+    *)                     # unknown option
+        POSITIONAL+=("$1") # save it in an array for later
+        shift              # past argument
+        ;;
+    esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [[ $SCENARIO == "" ]]
-then
+if [[ $SCENARIO == "" ]]; then
     PS3='Please choose a scenario: '
     options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario")
-    select opt_net in "${options_net[@]}"
-    do
+    select opt_net in "${options_net[@]}"; do
         case $opt_net in
-            "IRTSystemXScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=0 
-                break
-                ;;
-            "LuSTNanoScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=1 
-                break
-                ;;
-            "LuSTMiniScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=2
-                break
-                ;;
-            "LuSTScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=3
-                break
-                ;;
-            "UlmScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                SCENARIO=4 
-                break
-                ;;
-            *) echo
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "IRTSystemXScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            SCENARIO=0
+            break
+            ;;
+        "LuSTNanoScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            SCENARIO=1
+            break
+            ;;
+        "LuSTMiniScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            SCENARIO=2
+            break
+            ;;
+        "LuSTScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            SCENARIO=3
+            break
+            ;;
+        "UlmScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            SCENARIO=4
+            break
+            ;;
+        *)
+            echo
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 fi
 
-if [[ $APP_TYPE == "" ]]
-then
+if [[ $APP_TYPE == "" ]]; then
     PS3='Please choose a app to be used for misbehavior detection: '
     options_app=("ThresholdApp" "AggregationApp" "BehavioralApp" "ExperiApp" "CooperativeApp" "MachineLearningApp")
-    select opt_app in "${options_app[@]}"
-    do
+    select opt_app in "${options_app[@]}"; do
         case $opt_app in
-            "ThresholdApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=0 
-                break
-                ;;
-            "AggregationApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=1 
-                break
-                ;;
-            "BehavioralApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=2 
-                break
-                ;;
-            "ExperiApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=3 
-                break
-                ;;
-            "CooperativeApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=4 
-                break
-                ;;
-            "MachineLearningApp")
-                echo
-                echo "you chose choice $REPLY which is $opt_app"
-                APP_TYPE=5
-                break
-                ;;
-            *) echo
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "ThresholdApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=0
+            break
+            ;;
+        "AggregationApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=1
+            break
+            ;;
+        "BehavioralApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=2
+            break
+            ;;
+        "ExperiApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=3
+            break
+            ;;
+        "CooperativeApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=4
+            break
+            ;;
+        "MachineLearningApp")
+            echo
+            echo "you chose choice $REPLY which is $opt_app"
+            APP_TYPE=5
+            break
+            ;;
+        *)
+            echo
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 fi
 
-if [[ $CHECK_TYPE == "" ]]
-then
+if [[ $CHECK_TYPE == "" ]]; then
     PS3='Please choose a type of plausibility detectors: '
     options_check=("LegacyChecks" "CaTChChecks" "ExperiChecks")
-    select opt_check in "${options_check[@]}"
-    do
+    select opt_check in "${options_check[@]}"; do
         case $opt_check in
-            "LegacyChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=1 
-                break
-                ;;
-            "CaTChChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=2 
-                break
-                ;;
-            "ExperiChecks")
-                echo
-                echo "you chose choice $REPLY which is $opt_check"
-                CHECK_TYPE=3 
-                break
-                ;;
-            *) echo
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "LegacyChecks")
+            echo
+            echo "you chose choice $REPLY which is $opt_check"
+            CHECK_TYPE=1
+            break
+            ;;
+        "CaTChChecks")
+            echo
+            echo "you chose choice $REPLY which is $opt_check"
+            CHECK_TYPE=2
+            break
+            ;;
+        "ExperiChecks")
+            echo
+            echo "you chose choice $REPLY which is $opt_check"
+            CHECK_TYPE=3
+            break
+            ;;
+        *)
+            echo
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 fi
 
-if [[ $ATTACKER_DENSITY == "" ]]
-then
+if [[ $ATTACKER_DENSITY == "" ]]; then
     read -r -p "Please choose an attacker density (as percent number or float between 0 and 1): " ATTACKER_DENSITY
-    if [[ "$ATTACKER_DENSITY" =~ ^[[:digit:].e+-]+$ ]] && echo "$ATTACKER_DENSITY>100 && $ATTACKER_DENSITY<0" |bc -l | grep -q 1
-    then
+    if [[ "$ATTACKER_DENSITY" =~ ^[[:digit:].e+-]+$ ]] && echo "$ATTACKER_DENSITY>100 && $ATTACKER_DENSITY<0" | bc -l | grep -q 1; then
         echo "${ATTACKER_DENSITY} is out of bounds"
         exit 1
     fi
 fi
 
-if [[ $APP_TYPE != 5 ]]
-then
+if [[ $APP_TYPE != 5 ]]; then
     echo "Starting F2MD with following configuration:"
     echo "Scenario: ${SCENARIO} (${opt_net})"
     echo "App Type: ${APP_TYPE} (${opt_app})"
     echo "Plausibility Detector Type: ${CHECK_TYPE} (${opt_check})"
     echo "Attacker Density: ${ATTACKER_DENSITY}"
-    tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
-    tmux new-window  -t F2MD:1 -n var   "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
+    tmux new-session -s F2MD -n etc -d "cd /etc; bash -i"
+    if [[ $LOGGING == "YES" ]]; then
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
+    else
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng; bash -i"
+    fi
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 25
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i" 
-    tmux attach -t F2MD:2
+    if [[ $LOGGING == "YES" ]]; then
+        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i"
+    else
+        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0"; bash -i"
+    fi
+    if [[ $ATTACH == "YES" ]]; then
+        tmux attach -t F2MD:2
+    fi
 else
-    if [[ $ML_TYPE == "" ]]
-    then
+    if [[ $ML_TYPE == "" ]]; then
         PS3='Please choose a type of ML algorithm: '
         options_ml=("SVM_SINGLE" "MLP_SINGLE_L1N25" "MLP_SINGLE_L3N25" "LSTM_RECURRENT")
-        select opt_ml in "${options_ml[@]}"
-        do
+        select opt_ml in "${options_ml[@]}"; do
             case $opt_ml in
-                "SVM_SINGLE")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_ml"
-                    ML_TYPE="SVM_SINGLE" 
-                    break
-                    ;;
-                "MLP_SINGLE_L1N25")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_ml"
-                    ML_TYPE="MLP_SINGLE_L1N25" 
-                    break
-                    ;;
-                "MLP_SINGLE_L3N25")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_ml"
-                    ML_TYPE="MLP_SINGLE_L3N25" 
-                    break
-                    ;;
-                "LSTM_RECURRENT")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_ml"
-                    ML_TYPE="LSTM_RECURRENT" 
-                    break
-                    ;;
-                *) echo
-                    echo "invalid option $REPLY"
-                    exit 1            
-                    ;;
+            "SVM_SINGLE")
+                echo
+                echo "you chose choice $REPLY which is $opt_ml"
+                ML_TYPE="SVM_SINGLE"
+                break
+                ;;
+            "MLP_SINGLE_L1N25")
+                echo
+                echo "you chose choice $REPLY which is $opt_ml"
+                ML_TYPE="MLP_SINGLE_L1N25"
+                break
+                ;;
+            "MLP_SINGLE_L3N25")
+                echo
+                echo "you chose choice $REPLY which is $opt_ml"
+                ML_TYPE="MLP_SINGLE_L3N25"
+                break
+                ;;
+            "LSTM_RECURRENT")
+                echo
+                echo "you chose choice $REPLY which is $opt_ml"
+                ML_TYPE="LSTM_RECURRENT"
+                break
+                ;;
+            *)
+                echo
+                echo "invalid option $REPLY"
+                exit 1
+                ;;
             esac
         done
     fi
 
-    if [[ $SAVE_DATA == "" ]]
-    then
+    if [[ $SAVE_DATA == "" ]]; then
         PS3='Please choose if you need to save the data or not: '
         options_save=("Save Data" "Don't Save")
-        select opt_save in "${options_save[@]}"
-        do
+        select opt_save in "${options_save[@]}"; do
             case $opt_save in
-                "Save Data")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_save"
-                    SAVE_DATA=1
-                    break
-                    ;;
-                "Don't Save")
-                    echo
-                    echo "you chose choice $REPLY which is $opt_save"
-                    SAVE_DATA=0
-                    break
-                    ;;
-                *) echo
-                    echo "invalid option $REPLY"
-                    exit 1            
-                    ;;
+            "Save Data")
+                echo
+                echo "you chose choice $REPLY which is $opt_save"
+                SAVE_DATA=1
+                break
+                ;;
+            "Don't Save")
+                echo
+                echo "you chose choice $REPLY which is $opt_save"
+                SAVE_DATA=0
+                break
+                ;;
+            *)
+                echo
+                echo "invalid option $REPLY"
+                exit 1
+                ;;
             esac
         done
     fi
@@ -289,12 +298,26 @@ else
     echo "Attacker Density: ${ATTACKER_DENSITY}"
     echo "Machine Learning Type: ${ML_TYPE}"
     echo "Saving Data: ${SAVE_DATA} (${opt_save})"
-    tmux new-session -s F2MD   -n etc -d "cd /etc; bash -i"
-    tmux new-window  -t F2MD:1 -n var    "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} > ml-server-log.txt; bash -i"
-    tmux new-window  -t F2MD:2 -n var2   "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
+    tmux new-session -s F2MD -n etc -d "cd /etc; bash -i"
+    if [[ $LOGGING == "YES" ]]; then
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} > ml-server-log.txt; bash -i"
+    else
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA}; bash -i"
+    fi
+    if [[ $LOGGING == "YES" ]]; then
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
+    else
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng; bash -i"
+    fi
     python3 /F2MD/change-ini-params.py "${SCENARIO}" "${APP_TYPE}" "${CHECK_TYPE}" "${ATTACKER_DENSITY}"
     sleep 100
     tmux set-window-option -g remain-on-exit off
-    tmux new-window  -t F2MD:3 -n var3   "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i" 
-    tmux attach -t F2MD:3
+    if [[ $LOGGING == "YES" ]]; then
+        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0" > run-log.txt; bash -i"
+    else
+        tmux new-window -t F2MD:2 -n var2 "cd /F2MD/; ./runScenario -s "${SCENARIO}" -t "0" -e "0"; bash -i"
+    fi
+    if [[ $ATTACH == "YES" ]]; then
+        tmux attach -t F2MD:2
+    fi
 fi

@@ -3,5 +3,48 @@
 echo "Scenario is ${1}"
 echo "App is ${2}"
 echo "Check is ${3}"
-/F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5
+echo "Logging is ${4}"
+echo "Attaching is ${5}"
+echo "Waiting is ${6}"
+
+if [[ "${4}" == "1" ]]; then
+    if [[ "${5}" == "1" ]]; then
+        /F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5 -l -at
+    else
+        if [[ "${5}" == "0" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5  -l
+        else
+            echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
+            exit 1
+        fi
+    fi
+else
+    if [[ "${4}" == "0" ]]; then
+        if [[ "${5}" == "1" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5 -at
+        else
+            if [[ "${5}" == "0" ]]; then
+                /F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5
+            else
+                echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
+                exit 1
+            fi
+        fi
+    else
+        echo "Logging can only be 0 (non logging) or 1 (logging)"
+        exit 1
+    fi
+fi
+
+if [[ "${6}" == "1" ]]; then
+    # Check if sessions exist and pipe the error when none exist it into the variable
+    RUNNING=(tmux has-session -t $session 2>$1)
+
+    while [[ $RUNNING == "" ]]; do
+        echo "Running Env"
+        sleep 1
+        RUNNING=(tmux has-session -t $session 2>$1)
+    done
+fi
+
 exit

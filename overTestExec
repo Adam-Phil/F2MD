@@ -2,51 +2,42 @@
 
 session="F2MD"
 
+SCRIPTS_RUNNING=$(tmux has-session -t $session 2>&1) # pipes the error message into the variable
+
+echo "${SCRIPTS_RUNNING}"
+
+echo "First Script"
 /F2MD/testExec "${1}"
+
+echo "First Waiting"
 # Check if the session exists, discarding output
 # We can check $? for the exit status (zero for success, non-zero for failure)
-tmux has-session -t $session 2>/dev/null
+SCRIPTS_RUNNING=$(tmux has-session -t $session 2>&1)
 
-if [ $? != 0 ]; then
-    echo "Session F2MD exists"
-else
-    echo "F2MD does not exist"
-fi
+echo "${SCRIPTS_RUNNING}"
 
+while [[ $SCRIPTS_RUNNING == "" ]]; do
+    echo "Sleeping"
+    sleep 1
+    SCRIPTS_RUNNING=$(tmux has-session -t $session 2>&1)
+done
+
+echo "Moving and writing"
 mv "/F2MD/awesome-program.txt" "/F2MD/awesome-program-copy.txt"
-
-# Check if the session exists, discarding output
-# We can check $? for the exit status (zero for success, non-zero for failure)
-tmux has-session -t $session 2>/dev/null
-
-if [ $? != 0 ]; then
-    echo "Session F2MD exists"
-else
-    echo "F2MD does not exist"
-fi
-
 echo "This was awesome" > "/F2MD/awesome-program-copy.txt"
 
-# Check if the session exists, discarding output
-# We can check $? for the exit status (zero for success, non-zero for failure)
-tmux has-session -t $session 2>/dev/null
-
-if [ $? != 0 ]; then
-    echo "Session F2MD exists"
-else
-    echo "F2MD does not exist"
-fi
-
+echo "Second Script"
 /F2MD/testExec "${1}"
 
-
+echo "Second Waiting"
 # Check if the session exists, discarding output
 # We can check $? for the exit status (zero for success, non-zero for failure)
-tmux has-session -t $session 2>/dev/null
+SCRIPTS_RUNNING=$(tmux has-session -t $session)
+   
+while [[ $SCRIPTS_RUNNING == "" ]]; do
+    echo "Sleeping"
+    sleep 1
+    SCRIPTS_RUNNING=$(tmux has-session -t $session 2>&1)
+done
 
-if [ $? != 0 ]; then
-    echo "Session F2MD exists"
-else
-    echo "F2MD does not exist"
-fi
-exit
+echo "This script is done"
