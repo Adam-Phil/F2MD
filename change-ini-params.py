@@ -1,13 +1,13 @@
 def map_number_to_scenario(number):
-    if number == 1:
+    if number == 0:
         return "IRTSystemXScenario"
-    elif number == 2:
+    elif number == 1:
         return "LuSTNanoScenario"
-    elif number == 3:
+    elif number == 2:
         return "LuSTMiniScenario"
-    elif number == 4:
+    elif number == 3:
         return "LuSTScenario"
-    elif number == 5:
+    elif number == 4:
         return "UlmScenario"
     else:
         raise ValueError("Unknow scenario")
@@ -41,7 +41,9 @@ def change_content_according_to_params(content, app, check, attacker_density):
         content=content, name="checksVersionV1", param=check
     )
     new_content = change_single_param(content=new_content, name="appTypeV1", param=app)
-    new_content = change_single_param(content=new_content, name="LOCAL_ATTACKER_PROB", param=attacker_density)
+    new_content = change_single_param(
+        content=new_content, name="LOCAL_ATTACKER_PROB", param=attacker_density
+    )
     # print(new_content)
     return new_content
 
