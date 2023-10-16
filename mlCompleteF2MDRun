@@ -38,9 +38,12 @@ else
     fi
 fi
 
+echo "---------If waiting is 1 it should initiate the sequence now---------"
 if [[ "${6}" == "1" ]]; then
+    echo "Looks like waiting was 1"
     # Check if sessions exist and pipe the error when none exist it into the variable
     RUNNING=$(tmux has-session -t $session 2>&1)
+    echo "${RUNNING}"
     while [[ $RUNNING == "" ]]; do
         echo "Running Env"
         sleep 1
@@ -80,9 +83,12 @@ else
     fi
 fi
 
+echo "---------If waiting is 1 it should initiate the sequence now---------"
 if [[ "${6}" == "1" ]]; then
+    echo "Looks like waiting was 1"
     # Check if sessions exist and pipe the error when none exist it into the variable
     RUNNING=$(tmux has-session -t $session 2>&1)
+    echo "${RUNNING}"
     while [[ $RUNNING == "" ]]; do
         echo "Running Env"
         sleep 1
