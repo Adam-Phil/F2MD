@@ -7,6 +7,8 @@ echo "Logging is ${4}"
 echo "Attaching is ${5}"
 echo "Waiting is ${6}"
 
+session="F2MD"
+
 if [[ "${4}" == "1" ]]; then
     if [[ "${5}" == "1" ]]; then
         /F2MD/executeF2MD -s "${1}" -a "${2}" -c "${3}" -ad 5 -l -at
@@ -36,7 +38,9 @@ else
     fi
 fi
 
+echo "---------If waiting is 1 it should initiate the sequence now---------"
 if [[ "${6}" == "1" ]]; then
+    echo "Looks like waiting was 1"
     # Check if sessions exist and pipe the error when none exist it into the variable
     RUNNING=$(tmux has-session -t $session 2>&1)
     echo "${RUNNING}"
