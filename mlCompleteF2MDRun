@@ -52,7 +52,11 @@ if [[ "${6}" == "1" ]]; then
 fi
 
 python3 /F2MD/machine-learning-server/MLDatasetCollection.py "${3}" "${2}"
-python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "1.0"
+if [[ $3 == "SVM_SINGLE" ]]; then
+    python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "0.2"
+else
+    python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "1.0"
+fi
 
 if [[ "${4}" == "1" ]]; then
     if [[ "${5}" == "1" ]]; then

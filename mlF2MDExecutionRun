@@ -1,0 +1,88 @@
+#!/bin/bash
+
+session="F2MD"
+
+echo "Scenario is ${1}"
+echo "Check is ${2}"
+echo "ML Type is ${3}"
+echo "Logging is ${4}"
+echo "Attaching is ${5}"
+echo "Waiting is ${6}"
+
+CUR_DIR=$(pwd)
+
+SAVE_DIR="${CUR_DIR}/machine-learning-server/saveFile"
+CLF_DIR="${SAVE_DIR}/clfs"
+
+if [[ -d "${SAVE_DIR}" ]]; then
+    echo "Directory ${SAVE_DIR} already exists"
+else
+    mkdir "${SAVE_DIR}"
+fi
+
+if [[ -d "${CLF_DIR}" ]]; then
+    echo "Directory ${CLF_DIR} already exists"
+else
+    mkdir "${CLF_DIR}"
+fi
+
+options_check=("Legacy" "CaTCh" "Experi")
+opt_check=${options_check[${2}]}
+if [[ ${3} == "SVM_SINGLE" ]]; then
+    partition="0.2"
+else
+    partition="1.0"
+fi
+CLF_NAME="clf_${3}_${opt_check}_${partition}.pkl"
+CLF_PATH="${CUR_DIR}/${CLF_NAME}"
+TO_CLF_PATH="${CLF_DIR}/${CLF_NAME}"
+if [[ -f "${CLF_PATH}" ]]; then
+    mv "${CLF_PATH}" "${TO_CLF_PATH}"
+else
+    echo "CLF not saved in this directory"
+    exit 1
+fi
+
+if [[ "${4}" == "1" ]]; then
+    if [[ "${5}" == "1" ]]; then
+        /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -sd 0 -l -at
+    else
+        if [[ "${5}" == "0" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -sd 0 -l
+        else
+            echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
+            exit 1
+        fi
+    fi
+else
+    if [[ "${4}" == "0" ]]; then
+        if [[ "${5}" == "1" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -sd 0 -at
+        else
+            if [[ "${5}" == "0" ]]; then
+                /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -sd 0
+            else
+                echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
+                exit 1
+            fi
+        fi
+    else
+        echo "Logging can only be 0 (non logging) or 1 (logging)"
+        exit 1
+    fi
+fi
+
+echo "---------If waiting is 1 it should initiate the sequence now---------"
+if [[ "${6}" == "1" ]]; then
+    echo "Looks like waiting was 1"
+    # Check if sessions exist and pipe the error when none exist it into the variable
+    RUNNING=$(tmux has-session -t $session 2>&1)
+    echo "${RUNNING}"
+    while [[ $RUNNING == "" ]]; do
+        echo "Running Env"
+        sleep 1
+        RUNNING=$(tmux has-session -t $session 2>&1)
+    done
+fi
+
+exit

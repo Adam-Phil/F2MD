@@ -112,7 +112,7 @@ def main():
 
     model = sys.argv[1]
     if model == 1:
-        partitions = [round(elem / 10, 2) for elem in partitions]
+        partitions = [round(elem / 5, 2) for elem in partitions]
     savePath = "/F2MD/machine-learning-server"
     if model.isdigit():
         currentModel = number_to_model_name(int(model))
