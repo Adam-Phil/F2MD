@@ -9,7 +9,7 @@ echo "Logging is ${4}"
 echo "Attaching is ${5}"
 echo "Waiting is ${6}"
 
-CUR_DIR=$(pwd)
+CUR_DIR="/F2MD"
 
 SAVE_DIR="${CUR_DIR}/machine-learning-server/saveFile"
 CLF_DIR="${SAVE_DIR}/clfs"
