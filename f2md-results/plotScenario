@@ -10,7 +10,7 @@ for d in /F2MD/f2md-results/*/; do
         cp -r "${GUI_PLOTS_DIR}" "${d}"
         cd "${d}"
         gnuplot './gui-plots/realTimePlot.p'
-        sleep 2
+        sleep 5
         cd "${RES_DIR}"
     fi
 done
