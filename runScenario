@@ -4,147 +4,135 @@ RED="\033[1;31m"
 GREEN="\033[1;32m"
 NOCOLOR="\033[0m"
 
-portsinuse=$(netstat -tln | tail -n +3 | awk '{ print $4 }') 
+portsinuse=$(netstat -tln | tail -n +3 | awk '{ print $4 }')
 
-if [[ $portsinuse == *"9999"* ]]
-    then 
-        echo -e "\n${GREEN}Sumo TraCI Server is running. ${NOCOLOR}\n"
-    else
-        echo -e "\n${RED}Sumo TraCI Server not running. Please run $./launchSumoTraciServer.sh ${NOCOLOR}\n"
-        exit 1
+if [[ $portsinuse == *"9999"* ]]; then
+    echo -e "\n${GREEN}Sumo TraCI Server is running. ${NOCOLOR}\n"
+else
+    echo -e "\n${RED}Sumo TraCI Server not running. Please run $./launchSumoTraciServer.sh ${NOCOLOR}\n"
+    exit 1
 fi
 
 POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-key="$1"
-case $key in
-    -s|--scenario)
-    SCENARIO="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -t|--technology)
-    TECHNOLOGY="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -e|--env)
-    ENVIRONMENT="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
-    ;;
-esac
+while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+    -s | --scenario)
+        SCENARIO="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -t | --technology)
+        TECHNOLOGY="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -e | --env)
+        ENVIRONMENT="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    *)                     # unknown option
+        POSITIONAL+=("$1") # save it in an array for later
+        shift              # past argument
+        ;;
+    esac
 done
 set -- "${POSITIONAL[@]}" # restore positional parameters
 
-if [[ $SCENARIO == "" ]]
-then
+if [[ $SCENARIO == "" ]]; then
     PS3='Please chose a scenario: '
     options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario")
-    select opt_net in "${options_net[@]}"
-    do
+    select opt_net in "${options_net[@]}"; do
         case $opt_net in
-            "IRTSystemXScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                break
-                ;;
-            "LuSTNanoScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                break
-                ;;
-            "LuSTMiniScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                break
-                ;;
-            "LuSTScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                break
-                ;;
-            "UlmScenario")
-                echo
-                echo "you chose choice $REPLY which is $opt_net"
-                break
-                ;;
-            *) echo
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "IRTSystemXScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
+        "LuSTNanoScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
+        "LuSTMiniScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
+        "LuSTScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
+        "UlmScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
+        *)
+            echo
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 else
-    if [[ $SCENARIO == "0" ]]
-    then
+    if [[ $SCENARIO == "0" ]]; then
         opt_net="IRTSystemXScenario"
     else
-        if [[ $SCENARIO == "1" ]]
-        then
+        if [[ $SCENARIO == "1" ]]; then
             opt_net="LuSTNanoScenario"
         else
-            if [[ $SCENARIO == "2" ]]
-            then
+            if [[ $SCENARIO == "2" ]]; then
                 opt_net="LuSTMiniScenario"
             else
-                if [[ $SCENARIO == "3" ]]
-                then
+                if [[ $SCENARIO == "3" ]]; then
                     opt_net="LuSTScenario"
                 else
-                    if [[ $SCENARIO == "4" ]]
-                    then
+                    if [[ $SCENARIO == "4" ]]; then
                         opt_net="UlmScenario"
                     else
                         echo "Choose a valid scenario please (from 0 to 4)"
                         exit 1
-                    fi 
+                    fi
                 fi
             fi
         fi
     fi
 fi
 
-
 echo
 
-if [[ $TECHNOLOGY == "" ]]
-then 
+if [[ $TECHNOLOGY == "" ]]; then
     PS3='Please chose a technology: '
-    options_tech=("ITS-G5 (IEEE 802.11p)" "C-V2X (3GPP PC5 Mode 4)" )
-    select opt_tech in "${options_tech[@]}"
-    do
+    options_tech=("ITS-G5 (IEEE 802.11p)" "C-V2X (3GPP PC5 Mode 4)")
+    select opt_tech in "${options_tech[@]}"; do
         case $opt_tech in
-            "ITS-G5 (IEEE 802.11p)")
-                echo
-                echo "you chose choice $REPLY which is $opt_tech"
-                TECHNOLOGY="0"
-                break
-                ;;
-            "C-V2X (3GPP PC5 Mode 4)")
-                echo
-                echo "you chose choice $REPLY which is $opt_tech"
-                TECHNOLOGY="1"
-                break
-                ;;
-            *) echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "ITS-G5 (IEEE 802.11p)")
+            echo
+            echo "you chose choice $REPLY which is $opt_tech"
+            TECHNOLOGY="0"
+            break
+            ;;
+        "C-V2X (3GPP PC5 Mode 4)")
+            echo
+            echo "you chose choice $REPLY which is $opt_tech"
+            TECHNOLOGY="1"
+            break
+            ;;
+        *)
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 fi
 
-if [[ $TECHNOLOGY == "0" ]]
-then
+if [[ $TECHNOLOGY == "0" ]]; then
     cd "./veins-f2md/f2md-networks/"
 else
-    if [[ $TECHNOLOGY == "1" ]]
-    then
+    if [[ $TECHNOLOGY == "1" ]]; then
         opt_net="${opt_net}Mode4"
         cd "./simulte-f2md/f2md-networks/"
     else
@@ -154,38 +142,33 @@ else
 fi
 echo
 
-
-
-if [[ $ENVIRONMENT == "" ]]
-then 
+if [[ $ENVIRONMENT == "" ]]; then
     PS3='Please chose a simulation environnement: '
-    options_sim=("Cmdenv" "Qtenv" )
-    select opt_sim in "${options_sim[@]}"
-    do
+    options_sim=("Cmdenv" "Qtenv")
+    select opt_sim in "${options_sim[@]}"; do
         case $opt_sim in
-            "Cmdenv")
-                echo
-                echo "you chose choice $REPLY which is $opt_sim"
-                break
-                ;;
-            "Qtenv")
-                echo
-                echo "you chose choice $REPLY which is $opt_sim"
-                break
-                ;;
-            *) echo 
-                echo "invalid option $REPLY"
-                exit 1            
-                ;;
+        "Cmdenv")
+            echo
+            echo "you chose choice $REPLY which is $opt_sim"
+            break
+            ;;
+        "Qtenv")
+            echo
+            echo "you chose choice $REPLY which is $opt_sim"
+            break
+            ;;
+        *)
+            echo
+            echo "invalid option $REPLY"
+            exit 1
+            ;;
         esac
     done
 else
-    if [[ $ENVIRONMENT == "0" ]]
-    then
+    if [[ $ENVIRONMENT == "0" ]]; then
         opt_sim="Cmdenv"
     else
-        if [[ $ENVIRONMENT == "1" ]]
-        then
+        if [[ $ENVIRONMENT == "1" ]]; then
             opt_sim="Qtenv"
         else
             echo "Please choose a valid environment option (0 or 1)"
@@ -199,14 +182,12 @@ echo "Scenario: ${opt_net}"
 echo "Technology: ${TECHNOLOGY} (${opt_tech})"
 echo "Environment: ${opt_sim}"
 
-cd $opt_net 
+cd $opt_net
 ./run -u $opt_sim
 # Add the plotting and the renaming of the result after being done here as well
 
-# if [ "$TMUX" ]; then
-#    tmux kill-session -t F2MD
-# fi
+/F2MD/f2md-results/plotScenario
 
-
-
-
+if [ "$TMUX" ]; then
+    tmux kill-session -t F2MD
+fi
