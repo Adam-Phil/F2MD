@@ -79,7 +79,7 @@ if [[ "${6}" == "1" ]]; then
     RUNNING=$(tmux has-session -t $session 2>&1)
     echo "${RUNNING}"
     while [[ $RUNNING == "" ]]; do
-        echo "Running Env" > "run-log.txt"
+        echo "Running Env" > "whole-log.txt"
         sleep 1
         RUNNING=$(tmux has-session -t $session 2>&1)
     done
