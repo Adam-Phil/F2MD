@@ -57,6 +57,7 @@ class MlMain:
 
     collectDur = 0
     deltaCall = 100000
+
     trainedSamples = 0
 
     clf = None
@@ -117,9 +118,9 @@ class MlMain:
                 return True
         return False
 
-    def mlMain(self, bsmJsonString, AIType):
+    def mlMain(self, bsmJsonString, AIType, save_data):
         if not self.initiated:
-            self.init(AIType)
+            self.init(AIType, save_data)
             self.initiated = True
 
         start_time = time.time()
@@ -132,7 +133,7 @@ class MlMain:
             if self.collectDur < self.deltaCall:
                 # print(self.collectDur)
                 self.collectDur = self.collectDur + 1
-                if self.checkData(bsmJsom):
+                if (not time_based_save) or self.checkData(bsmJsom):
                     self.dataCollector.collectData(curArray)
             else:
                 print("DataSave And Training " + str(self.deltaCall) + " Started ...")
@@ -224,7 +225,7 @@ class MlMain:
             self.filterdelta = time
             self.storage.filter_bsms(time, RTFilterKeepTime)
 
-        # TODO: Only take SINGLE or FEATURES here, everything else is some kind of historical data, which you do not need
+        # TODO: Only take SINGLE or RECURRENT here, everything else is some kind of historical data, which you do not need
         if (
             "SINGLE" in AIType
         ):  # takes the first 24 features of the arrays (so without position and so on)

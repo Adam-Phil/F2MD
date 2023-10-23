@@ -8,5 +8,5 @@ if [ -z "$1" ]
 fi
 
 
-echo "called: python3 MLServer.py 9997 $1"
-python3 MLServer.py 9997 $1 $2
+echo "called: python3 MLServer.py 9997 ${1} ${2}"
+python3 /F2MD/machine-learning-server/MLServer.py 9997 "${1}" "${2}"

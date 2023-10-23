@@ -192,6 +192,6 @@ echo "The run is now done. Now plotting..."
 
 echo "Plotting done. Killing the session if one exists..."
 
-if [ "$TMUX" ]; then
-    tmux kill-session -t F2MD
-fi
+#if [ "$TMUX" ]; then
+#    tmux kill-session -t F2MD
+#fi

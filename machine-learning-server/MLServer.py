@@ -51,7 +51,6 @@ def make_handler(ml_type, save_data):
 			#print('The Request: %s' % (self.path))
 			#requestStr = urllib2.unquote((self.path));
 			#requestStr = unquote(self.path)
-
 			pred = self.globalMlMain.mlMain(self.path, ml_type, save_data)
 
 			# the response
@@ -76,9 +75,7 @@ def run(ml_type, save_data, server_class=HTTPServer, port=9997):
 
 if __name__ == "__main__":
 	from sys import argv
-	if len(argv) == 4:
-		run(ml_type=argv[2], save_data=argv[3], port=int(argv[1]))
-	elif len(argv) == 3:
+	if len(argv) == 4 or len(argv) == 3:
 		run(ml_type=argv[2], save_data=argv[3], port=int(argv[1]))
 	else:
 		print('not enough argv')
