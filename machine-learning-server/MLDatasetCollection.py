@@ -106,6 +106,7 @@ def appendData(data, newDataPath, savePath):
 
 
 def main():
+    print("Collecting Data")
     partition_numbers = 10
     # partitions = [(h+1)/partition_numbers for h in range(partition_numbers)]
     partitions = [1.0]
