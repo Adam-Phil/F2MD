@@ -24,9 +24,9 @@ call 'gui-plots/plotMdmAll.p' "#00bb00"
 
 # --- GRAPH c
 #call 'gui-plots/plotMda-DetectionLatency.p'
-call 'gui-plots/plotV1vsV2Faulty.p' "#00bb00"
+#call 'gui-plots/plotV1vsV2Faulty.p' "#00bb00"
 # --- GRAPH d
-call 'gui-plots/plotV1vsV2Attack.p' "#00bb00"
+call 'gui-plots/plotV1vsV2AttackAndFaulty.p' "#00bb00"
 # --- GRAPH e
 
 call 'gui-plots/plotDensity.p' "#00bb00"
