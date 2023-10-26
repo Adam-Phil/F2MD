@@ -1,6 +1,8 @@
 omnetpp-workspace/inet/*
 Programs/*
 f2md-results/*Scenario*
+f2md-results/Analysis
+f2md-results/*.py
 oldExecutionScript
 awesome-program.txt
 awesome-program-copy.txt

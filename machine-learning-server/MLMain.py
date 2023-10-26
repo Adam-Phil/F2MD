@@ -104,6 +104,7 @@ class MlMain:
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
         self.dataCollector.setSavePath(self.savePath)
+        self.dataCollector.setAIType(AIType=AIType)
         self.trainer.setCurDateSrt(self.curDateStr)
         self.trainer.setSavePath(self.savePath)
         self.trainer.setAIType(AIType)
