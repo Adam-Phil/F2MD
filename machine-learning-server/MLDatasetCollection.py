@@ -112,13 +112,14 @@ def main():
     partitions = [1.0]
 
     model = sys.argv[1]
-    if model == 1:
-        partitions = [round(elem / 5, 2) for elem in partitions]
+    
     savePath = "/F2MD/machine-learning-server"
     if model.isdigit():
         currentModel = number_to_model_name(int(model))
     else:
         currentModel = model_name_to_short(model)
+    if "SVM" in currentModel:
+        partitions = [round(elem / 5, 2) for elem in partitions]
     checkVersion = determineCurrentCheckVersion(int(sys.argv[2]))
     loadPath = (
         savePath
@@ -180,6 +181,7 @@ def main():
             partitions.pop(0)
             partition_sizes.pop(0)
             # print(partitions)
+    print("Values Data Shape: " + str(valuesData.shape))
 
 
 if __name__ == "__main__":
