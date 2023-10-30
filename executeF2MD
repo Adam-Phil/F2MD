@@ -166,7 +166,7 @@ fi
 
 if [[ $CHECK_TYPE == "" ]]; then
     PS3='Please choose a type of plausibility detectors: '
-    options_check=("LegacyChecks" "CaTChChecks" "ExperiChecks")
+    options_check=("LegacyChecks" "CatchChecks" "ExperiChecks")
     select opt_check in "${options_check[@]}"; do
         case $opt_check in
         "LegacyChecks")
@@ -175,7 +175,7 @@ if [[ $CHECK_TYPE == "" ]]; then
             CHECK_TYPE=0
             break
             ;;
-        "CaTChChecks")
+        "CatchChecks")
             echo
             echo "you chose choice $REPLY which is $opt_check"
             CHECK_TYPE=1

@@ -22,7 +22,7 @@ if __name__ == "__main__":
     extra = "_30_n_iter_100_relu_lbfgs"
     print("Starting...")
     savePath = "/F2MD/machine-learning-server/saveFile"
-    if model == 1:
+    if model == 0:
         print("Starting Data Loading; Partition: " + checkVersion + "_" + partition)
         with open (savePath+'/concat_data/'+"valuesSave_SVM_" + checkVersion + "_" + partition + ".listpkl", 'rb') as fp:
             X = pickle.load(fp)
@@ -36,7 +36,7 @@ if __name__ == "__main__":
         clf.fit(X, y)
         print("Machine Learning done; saving model")
         joblib.dump(clf, savePath + '/clfs/clf_SVM_SINGLE_' + checkVersion + "_" + partition + ".pkl")
-    elif model == 2:
+    elif model == 1:
         print("Starting Data Loading; Partition: " + checkVersion + "_" + partition)
         with open (savePath+'/concat_data/'+"valuesSave_MLP_L1N25_" + checkVersion + "_" + partition + ".listpkl", 'rb') as fp:
             X = pickle.load(fp)
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         clf.fit(X, y)
         print("Machine Learning done; saving model")
         joblib.dump(clf, savePath + '/clfs/clf_MLP_SINGLE_L1N25_' + checkVersion + "_" + partition + ".pkl")
-    elif model == 3:
+    elif model == 2:
         print("Starting Data Loading; Partition: " + checkVersion + "_" + partition)
         with open (savePath+'/concat_data/'+"valuesSave_MLP_L3N25_" + checkVersion + "_" + partition + ".listpkl", 'rb') as fp:
             X = pickle.load(fp)
@@ -64,7 +64,7 @@ if __name__ == "__main__":
         clf.fit(X, y)
         print("Machine Learning done; saving model")
         joblib.dump(clf, savePath + '/clfs/clf_MLP_SINGLE_L3N25_' + checkVersion + "_" + partition + ".pkl")
-    elif model == 4:
+    elif model == 3:
         print("Starting Data Loading; Partition: " + checkVersion + "_" + partition)
         with open (savePath+'/concat_data/'+"valuesSave_LSTM_" + checkVersion + "_" + partition + ".listpkl", 'rb') as fp:
             X = pickle.load(fp)

@@ -26,7 +26,7 @@ else
     mkdir "${CLF_DIR}"
 fi
 
-options_check=("Legacy" "CaTCh" "Experi")
+options_check=("Legacy" "Catch" "Experi")
 opt_check=${options_check[${2}]}
 if [[ ${3} == "SVM_SINGLE" ]]; then
     partition="0.2"

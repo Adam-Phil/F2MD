@@ -22,38 +22,38 @@ def model_name_to_short(model_name):
     
 def model_name_to_number(model_name):
     if "SVM" in model_name:
-        return 1
+        return 0
     elif "MLP" in model_name:
         if "L1N25" in model_name:
-            return 2
+            return 1
         elif "L3N25" in model_name:
-            return 3
+            return 2
         else:
             raise ValueError("Not suitable model")
     elif "LSTM" in model_name:
-        return 4
+        return 3
     else:
         raise ValueError("Not suitable model")
 
 def number_to_model_name(model):
-    if model == 1:
+    if model == 0:
         return "SVM"
-    elif model == 2:
+    elif model == 1:
         return "MLP_L1N25"
-    elif model == 3:
+    elif model == 2:
         return "MLP_L3N25"
-    elif model == 4:
+    elif model == 3:
         return "LSTM"
     else:
         raise ValueError("Not suitable model")
 
 
 def determineCurrentCheckVersion(checkVersion):
-    if checkVersion == 1:
+    if checkVersion == 0:
         return "Legacy"
-    elif checkVersion == 2:
+    elif checkVersion == 1:
         return "Catch"
-    elif checkVersion == 3:
+    elif checkVersion == 2:
         return "Experi"
     else:
         raise ValueError("Unknown Checks Version")

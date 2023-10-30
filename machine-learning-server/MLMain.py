@@ -140,7 +140,10 @@ class MlMain:
                 print("DataSave And Training " + str(self.deltaCall) + " Started ...")
                 self.collectDur = 0
                 if len(self.dataCollector.valuesData) != 0:
+                    print("Now saving as there is something in collected data")
                     self.dataCollector.saveData(self.check_type)
+                else:
+                    print("Not saving anything as there is not yet something to save")
                 # self.inventory()
                 if RTtrain:
                     # print(len(self.dataCollector.valuesData))
