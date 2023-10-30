@@ -143,7 +143,7 @@ class MlMain:
                     print("Now saving as there is something in collected data")
                     self.dataCollector.saveData(self.check_type)
                 else:
-                    print("Not saving anything as there is not yet something to save")
+                    print("Not saving anything as there is not yet something to")
                 # self.inventory()
                 if RTtrain:
                     # print(len(self.dataCollector.valuesData))
@@ -290,7 +290,7 @@ class MlMain:
         for s in filesNames:
             if s.startswith("clf_" + AIType) and s.endswith(".pkl") and AIType in s:
                 print("Loading " + s + " " + AIType + " ...")
-                self.clf = joblib.load(self.savePath + "/" + s)
+                self.clf = joblib.load(self.savePath + "/clfs/" + s)
                 self.curDateStr = s[-23:-4]
                 self.dataCollector.setCurDateSrt(self.curDateStr)
                 self.trainer.setCurDateSrt(self.curDateStr)
