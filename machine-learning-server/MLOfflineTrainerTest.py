@@ -8,7 +8,6 @@ from keras.layers import Dense, LSTM
 from keras.callbacks import ReduceLROnPlateau
 from keras.utils import to_categorical
 from MLDatasetCollection import model_name_to_number
-import tensorflow as tf
 import numpy as np
 import joblib
 import pickle
@@ -207,7 +206,7 @@ if __name__ == "__main__":
             metrics=["accuracy"],
         )
         clf.fit(X_train, y_train)
-        tf.keras.utils.plot_model(clf)
+        # tf.keras.utils.plot_model(clf)
         #joblib.dump(clf, savePath + "/clfs/clf_MLP_Weighted" + ".pkl")
     else:
         raise ValueError("Not a suitable model selected")
