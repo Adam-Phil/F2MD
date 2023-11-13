@@ -38,7 +38,7 @@ CLF_NAME="clf_${3}_${opt_check}_${partition}.pkl"
 CLF_PATH="${CUR_DIR}/${CLF_NAME}"
 TO_CLF_PATH="${CLF_DIR}/${CLF_NAME}"
 if [[ -f "${CLF_PATH}" ]]; then
-    mv "${CLF_PATH}" "${TO_CLF_PATH}"
+    cp "${CLF_PATH}" "${TO_CLF_PATH}"
 else
     echo "CLF not saved in this directory"
     exit 1

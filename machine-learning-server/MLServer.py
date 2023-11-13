@@ -76,7 +76,8 @@ def run(ml_type, save_data, positive_threshold, server_class=HTTPServer, port=99
 
 if __name__ == "__main__":
 	from sys import argv
-	if len(argv) == 4 or len(argv) == 3:
+	print(argv)
+	if len(argv) == 5 or len(argv) == 4:
 		run(ml_type=argv[2], save_data=argv[3], positive_threshold=argv[4], port=int(argv[1]))
 	else:
 		print('not enough argv')
