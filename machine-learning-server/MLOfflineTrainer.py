@@ -83,9 +83,8 @@ if __name__ == "__main__":
         clf.add(Dense(y.shape[1],activation='softmax'))  
         clf.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
         reduce_lr = ReduceLROnPlateau(monitor='accuracy', factor=0.7,patience=4, min_lr=0.0005)
-        clf.fit(X, y,epochs=10, batch_size=64, callbacks=[reduce_lr])
         print("Starting machine learning: LSTM")
-        clf.fit(X, y)
+        clf.fit(X, y,epochs=10, batch_size=64, callbacks=[reduce_lr])
         print("Machine Learning done; saving model")
         joblib.dump(clf, savePath + '/clfs/clf_LSTM_RECURRENT_' + checkVersion + "_" + partition + ".pkl")
     else:

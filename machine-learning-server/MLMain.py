@@ -35,8 +35,6 @@ time_based_save = True
 lower_bounds = [25200, 50400]
 upper_bounds = [32400, 57600]
 
-Positive_Threshold = 0.5
-
 RTFilterTime = 100
 RTFilterKeepTime = 600
 
@@ -97,9 +95,10 @@ class MlMain:
         if not (os.path.exists(concat_data_path) and os.path.isdir(concat_data_path)):
             deepMkDir(concat_data_path)
 
-    def init(self, AIType, RTsave):
+    def init(self, AIType, RTsave, positive_threshold):
         self.le.fit(self.labels_legacy)
         self.RTsave = RTsave
+        self.positive_threshold = positive_threshold
         self.create_save_folders()
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
@@ -119,9 +118,9 @@ class MlMain:
                 return True
         return False
 
-    def mlMain(self, bsmJsonString, AIType, save_data):
+    def mlMain(self, bsmJsonString, AIType, save_data, positive_threshold):
         if not self.initiated:
-            self.init(AIType, save_data)
+            self.init(AIType, save_data, positive_threshold)
             self.initiated = True
 
         start_time = time.time()
@@ -178,7 +177,7 @@ class MlMain:
                 [bsmJsom["BsmPrint"]["Metadata"]["mbType"]]
             )[0]
             self.varthrelite.update_stats(prediction, label_index)
-            if prediction > Positive_Threshold:
+            if prediction > self.positive_threshold:
                 self.stats.update_stats(True, label_index)
                 return_value = "True"
             else:

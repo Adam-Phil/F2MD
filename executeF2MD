@@ -12,6 +12,7 @@ HELP="$HELP -a,  --app-type APP_TYPE                    specify the app to detec
 HELP="$HELP -c,  --check-type CHECK_TYPE                specify the type of plausibility detectors to use\n"
 HELP="$HELP -ad, --attacker-density ATTACKER_DENSITY    set the attacker density of the model\n"
 HELP="$HELP -ml, --ml-type ML_TYPE                      specify the type of machine learning to be used if an\n"
+HELP="$HELP -t,  --threshold THRESHOLD                  specify the threshold above which the probability given back by the ml algorithm is misbehavior or not\n"
 HELP="$HELP -sd, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
 
 POSITIONAL=()
@@ -51,6 +52,11 @@ while [[ $# -gt 0 ]]; do
         ;;
     -sd | --save-data)
         SAVE_DATA="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -t | --threshold)
+        THRESHOLD="$2"
         shift # past argument
         shift # past value
         ;;
@@ -291,6 +297,15 @@ else
             esac
         done
     fi
+
+    if [[ $THRESHOLD == "" ]]; then
+        read -r -p "Please choose a threshold for the ml probability (as percent number or float between 0 and 1): " THRESHOLD
+        if [[ "$THRESHOLD" =~ ^[[:digit:].e+-]+$ ]] && echo "$THRESHOLD>100 && $THRESHOLD<0" | bc -l | grep -q 1; then
+            echo "${THRESHOLD} is out of bounds"
+            exit 1
+        fi
+    fi
+
     echo "Starting F2MD with following configuration:"
     echo "Scenario: ${SCENARIO} (${opt_net})"
     echo "App Type: ${APP_TYPE} (${opt_app})"
@@ -298,11 +313,12 @@ else
     echo "Attacker Density: ${ATTACKER_DENSITY}"
     echo "Machine Learning Type: ${ML_TYPE}"
     echo "Saving Data: ${SAVE_DATA} (${opt_save})"
+    echo "Threshold for ML is: ${THRESHOLD}"
     tmux new-session -s F2MD -n etc -d "cd /etc; bash -i"
     if [[ $LOGGING == "YES" ]]; then
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} > ml-server-log.txt; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} > ml-server-log.txt; bash -i"
     else
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA}; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD}; bash -i"
     fi
     if [[ $LOGGING == "YES" ]]; then
         tmux new-window -t F2MD:2 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"

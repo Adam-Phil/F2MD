@@ -19,7 +19,8 @@ def model_name_to_short(model_name):
         return "LSTM"
     else:
         raise ValueError("Not suitable model")
-    
+
+
 def model_name_to_number(model_name):
     if "SVM" in model_name:
         return 0
@@ -34,6 +35,7 @@ def model_name_to_number(model_name):
         return 3
     else:
         raise ValueError("Not suitable model")
+
 
 def number_to_model_name(model):
     if model == 0:
@@ -105,14 +107,24 @@ def appendData(data, newDataPath, savePath):
     return retValues
 
 
+def strip_t_data(t_data, data_number):
+    return t_data[:data_number]
+
+
+def strip_v_data(v_data, data_number):
+    if len(v_data.shape) == 3:
+        return v_data[:data_number, :, :]
+    else:
+        return v_data[:data_number, :]
+
+
 def main():
     print("Collecting Data")
-    partition_numbers = 10
-    # partitions = [(h+1)/partition_numbers for h in range(partition_numbers)]
+    data_number = 105000
     partitions = [1.0]
 
     model = sys.argv[1]
-    
+
     savePath = "/F2MD/machine-learning-server"
     if model.isdigit():
         currentModel = number_to_model_name(int(model))
@@ -122,13 +134,8 @@ def main():
         partitions = [round(elem / 5, 2) for elem in partitions]
     checkVersion = determineCurrentCheckVersion(int(sys.argv[2]))
     loadPath = (
-        savePath
-        + "/saveFile/data/"
-        + checkVersion
-        + "_Checks_Data/"
-        + currentModel
+        savePath + "/saveFile/data/" + checkVersion + "_Checks_Data/" + currentModel
     )
-    # loadPath = savePath + "/saveFile/" + currentModel
     savePath = savePath + "/saveFile/concat_data"
     print(savePath)
     print(loadPath)
@@ -169,6 +176,19 @@ def main():
         else:
             rounded_partition = round((i + 1) / valuesNamesLength, 1)
         # print(rounded_partition)
+        x = targetData.shape[0]
+        if x >= data_number:
+            targetData = strip_t_data(targetData, data_number)
+            valuesData = strip_v_data(valuesData, data_number)
+            saveData(
+                valuesData,
+                targetData,
+                rounded_partition,
+                savePath,
+                currentModel,
+                checkVersion,
+            )
+            break
         if (i + 1) in partition_sizes:
             saveData(
                 valuesData,
