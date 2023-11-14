@@ -167,19 +167,16 @@ class MlMain:
             start_time_p = time.time()
             
             end_time_p = time.time()
-            gen_index = self.le.transform(["Genuine"])[0]
             if "SVM" in AIType or "MLP" in AIType:
                 pred_array = self.clf.predict_proba(array_npy)
-                print(pred_array)
-                if isinstance(pred_array, list) or isinstance(pred_array,np.ndarray):
-                    prediction = pred_array[0]
+                if (isinstance(pred_array, list) or isinstance(pred_array,np.ndarray)) and (isinstance(pred_array[0], list) or isinstance(pred_array[0],np.ndarray)):
+                    prediction = pred_array[0][1]
                 else:
                     prediction = pred_array
             else:
                 pred_array = self.clf.predict(array_npy)
-                print(pred_array)
-                if isinstance(pred_array, list) or isinstance(pred_array,np.ndarray):
-                    prediction = pred_array[0]
+                if (isinstance(pred_array, list) or isinstance(pred_array,np.ndarray)) and (isinstance(pred_array[0], list) or isinstance(pred_array[0],np.ndarray)):
+                    prediction = pred_array[0][0]
                 else:
                     prediction = pred_array
 
