@@ -165,13 +165,23 @@ class MlMain:
                 self.clf.reset_states()
             array_npy = np.array([curArray[0]])
             start_time_p = time.time()
-            pred_array = self.clf.predict(array_npy)
+            
             end_time_p = time.time()
             gen_index = self.le.transform(["Genuine"])[0]
             if "SVM" in AIType or "MLP" in AIType:
-                prediction = pred_array[0]
+                pred_array = self.clf.predict_proba(array_npy)
+                print(pred_array)
+                if isinstance(pred_array, list) or isinstance(pred_array,np.ndarray):
+                    prediction = pred_array[0]
+                else:
+                    prediction = pred_array
             else:
-                prediction = pred_array[0][1 - gen_index]
+                pred_array = self.clf.predict(array_npy)
+                print(pred_array)
+                if isinstance(pred_array, list) or isinstance(pred_array,np.ndarray):
+                    prediction = pred_array[0]
+                else:
+                    prediction = pred_array
 
             label_index = self.le.transform(
                 [bsmJsom["BsmPrint"]["Metadata"]["mbType"]]
