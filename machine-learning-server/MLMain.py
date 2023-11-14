@@ -175,6 +175,7 @@ class MlMain:
                     prediction = pred_array
             else:
                 pred_array = self.clf.predict(array_npy)
+                print(pred_array)
                 if (isinstance(pred_array, list) or isinstance(pred_array,np.ndarray)) and (isinstance(pred_array[0], list) or isinstance(pred_array[0],np.ndarray)):
                     prediction = pred_array[0][0]
                 else:
@@ -183,7 +184,7 @@ class MlMain:
             label_index = self.le.transform(
                 [bsmJsom["BsmPrint"]["Metadata"]["mbType"]]
             )[0]
-            self.varthrelite.update_stats(prediction, label_index)
+            # self.varthrelite.update_stats(prediction, label_index)
             if prediction > self.positive_threshold:
                 self.stats.update_stats(True, label_index)
                 return_value = "True"
