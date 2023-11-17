@@ -18,6 +18,7 @@ import json
 import numpy as np
 from MLDataCollector import MlDataCollector, deepMkDir
 from MLNodeStorage import MlNodeStorage
+from MLPDropout import MLPDropout
 from MLTrainer import MlTrainer
 import datetime
 import joblib
@@ -51,7 +52,7 @@ class MlMain:
     dataCollector = MlDataCollector()
     trainer = MlTrainer()
     storage = MlNodeStorage()
-    arrayLength = 60
+    arrayLength = 20
 
     collectDur = 0
     deltaCall = 100000
@@ -154,7 +155,7 @@ class MlMain:
 
         return_value = "False"
 
-        if self.clf is None:
+        if self.clf is None or self.RTsave:
             # print("No clf loaded")
             return_value = "False"
             start_time_p = 0.0

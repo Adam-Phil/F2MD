@@ -210,7 +210,7 @@ class MlArrayStorage:
 	def get_array_lstm(self, id, batch_size):
 		index = self.id_index.index(id)
 		list_X = self.id_array_x[index][-batch_size:]
-		list_X =np.array(list_X)[:,-5:]
+		list_X =np.array(list_X)
 		if APPEND_ZEROS:
 			if len(list_X)<batch_size:
 				list_X_Ret = np.zeros(len(list_X[-1]),dtype=np.float32)
