@@ -3,8 +3,8 @@ unset log                              # remove any log-scaling
 unset label                            # remove any previous labels
 set xtic auto                          # set xtics automatically
 set ytic auto 			# set ytics automatically
-#set yrange [0:1] 
-set yrange [-1:1]
+set yrange [0:1] 
+# set yrange [-1:1]
 #unset yrange 
 set title "Markedness"
 set xlabel "Time (Min)"
