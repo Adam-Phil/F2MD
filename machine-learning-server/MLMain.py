@@ -96,10 +96,12 @@ class MlMain:
         if not (os.path.exists(concat_data_path) and os.path.isdir(concat_data_path)):
             deepMkDir(concat_data_path)
 
-    def init(self, AIType, RTsave, positive_threshold):
+    def init(self, AIType, RTsave, positive_threshold, feat_start, feat_end):
         self.le.fit(self.labels_legacy)
         self.RTsave = RTsave
         self.positive_threshold = positive_threshold
+        self.feat_start = feat_start
+        self.feat_end = feat_end
         self.create_save_folders()
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
@@ -119,9 +121,11 @@ class MlMain:
                 return True
         return False
 
-    def mlMain(self, bsmJsonString, AIType, save_data, positive_threshold):
+    def mlMain(
+        self, bsmJsonString, AIType, save_data, positive_threshold, feat_start, feat_end
+    ):
         if not self.initiated:
-            self.init(AIType, save_data, positive_threshold)
+            self.init(AIType, save_data, positive_threshold, feat_start, feat_end)
             self.initiated = True
 
         start_time = time.time()
@@ -165,19 +169,37 @@ class MlMain:
             if "LSTM" in AIType:  # try out if this is necessarry here
                 self.clf.reset_states()
             array_npy = np.array([curArray[0]])
+            if self.feat_start<0:
+                self.feat_start=0
             start_time_p = time.time()
-            
+
             end_time_p = time.time()
             if "SVM" in AIType or "MLP" in AIType:
+                if self.feat_end>len(array_npy):
+                    self.feat_end=len(array_npy)
+                array_npy = array_npy[self.feat_start : self.feat_end]
                 pred_array = self.clf.predict_proba(array_npy)
-                if (isinstance(pred_array, list) or isinstance(pred_array,np.ndarray)) and (isinstance(pred_array[0], list) or isinstance(pred_array[0],np.ndarray)):
+                if (
+                    isinstance(pred_array, list) or isinstance(pred_array, np.ndarray)
+                ) and (
+                    isinstance(pred_array[0], list)
+                    or isinstance(pred_array[0], np.ndarray)
+                ):
                     prediction = pred_array[0][1]
                 else:
                     prediction = pred_array
             else:
+                if self.feat_end>len(array_npy[0]):
+                    self.feat_end=len(array_npy[0])
+                array_npy = array_npy[:, self.feat_start : self.feat_end]
                 pred_array = self.clf.predict(array_npy)
-                
-                if (isinstance(pred_array, list) or isinstance(pred_array,np.ndarray)) and (isinstance(pred_array[0], list) or isinstance(pred_array[0],np.ndarray)):
+
+                if (
+                    isinstance(pred_array, list) or isinstance(pred_array, np.ndarray)
+                ) and (
+                    isinstance(pred_array[0], list)
+                    or isinstance(pred_array[0], np.ndarray)
+                ):
                     prediction = pred_array[0][0]
                 else:
                     prediction = pred_array
