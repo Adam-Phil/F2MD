@@ -12,3 +12,4 @@ ml-server-log.txt
 client-log.txt
 server-log.txt
 whole-log.txt
+clf*.pkl
