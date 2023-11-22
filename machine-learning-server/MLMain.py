@@ -169,14 +169,14 @@ class MlMain:
             if "LSTM" in AIType:  # try out if this is necessarry here
                 self.clf.reset_states()
             array_npy = np.array([curArray[0]])
-            if self.feat_start<0:
-                self.feat_start=0
+            if self.feat_start < 0:
+                self.feat_start = 0
             start_time_p = time.time()
 
             end_time_p = time.time()
             if "SVM" in AIType or "MLP" in AIType:
-                if self.feat_end>len(array_npy):
-                    self.feat_end=len(array_npy)
+                if self.feat_end > len(array_npy):
+                    self.feat_end = len(array_npy)
                 array_npy = array_npy[self.feat_start : self.feat_end]
                 pred_array = self.clf.predict_proba(array_npy)
                 if (
@@ -189,9 +189,11 @@ class MlMain:
                 else:
                     prediction = pred_array
             else:
-                if self.feat_end>len(array_npy[0]):
-                    self.feat_end=len(array_npy[0])
-                array_npy = array_npy[:, self.feat_start : self.feat_end]
+                (_,_,s) = np.shape(array_npy)
+                if self.feat_end > s:
+                    self.feat_end = s
+                array_npy = array_npy[:,:,self.feat_start : self.feat_end]
+                print(np.shape(array_npy))
                 pred_array = self.clf.predict(array_npy)
 
                 if (
