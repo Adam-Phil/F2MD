@@ -6,28 +6,30 @@ echo "Scenario is ${1}"
 echo "Check is ${2}"
 echo "ML Type is ${3}"
 echo "Threshold is ${4}"
-echo "Logging is ${5}"
-echo "Attaching is ${6}"
-echo "Waiting is ${7}"
+echo "Feat start is ${5}"
+echo "Feat end is ${6}"
+echo "Logging is ${7}"
+echo "Attaching is ${8}"
+echo "Waiting is ${9}"
 
-if [[ "${5}" == "1" ]]; then
-    if [[ "${6}" == "1" ]]; then
-        /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -sd 1 -l -at
+if [[ "${7}" == "1" ]]; then
+    if [[ "${8}" == "1" ]]; then
+        /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 1 -l -at
     else
-        if [[ "${6}" == "0" ]]; then
-            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -sd 1 -l
+        if [[ "${8}" == "0" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 1 -l
         else
             echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
             exit 1
         fi
     fi
 else
-    if [[ "${5}" == "0" ]]; then
-        if [[ "${6}" == "1" ]]; then
-            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -sd 1 -at
+    if [[ "${7}" == "0" ]]; then
+        if [[ "${8}" == "1" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 1 -at
         else
-            if [[ "${6}" == "0" ]]; then
-                /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -sd 1
+            if [[ "${8}" == "0" ]]; then
+                /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 30 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 1
             else
                 echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
                 exit 1
@@ -40,13 +42,13 @@ else
 fi
 
 echo "---------If waiting is 1 it should initiate the sequence now---------"
-if [[ "${7}" == "1" ]]; then
+if [[ "${9}" == "1" ]]; then
     echo "Looks like waiting was 1"
     # Check if sessions exist and pipe the error when none exist it into the variable
     RUNNING=$(tmux has-session -t $session 2>&1)
     echo "${RUNNING}"
     while [[ $RUNNING == "" ]]; do
-        if [[ "${5}" == "1" ]]; then
+        if [[ "${7}" == "1" ]]; then
             echo "Running Env" > "whole-log.txt"
         fi
         sleep 1
@@ -61,24 +63,24 @@ else
     python3 /F2MD/machine-learning-server/MLOfflineTrainer.py "${3}" "${2}" "1.0"
 fi
 
-if [[ "${5}" == "1" ]]; then
-    if [[ "${6}" == "1" ]]; then
-        /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -sd 0 -l -at
+if [[ "${7}" == "1" ]]; then
+    if [[ "${8}" == "1" ]]; then
+        /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 0 -l -at
     else
-        if [[ "${6}" == "0" ]]; then
-            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -sd 0 -l
+        if [[ "${8}" == "0" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 0 -l
         else
             echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
             exit 1
         fi
     fi
 else
-    if [[ "${5}" == "0" ]]; then
-        if [[ "${6}" == "1" ]]; then
-            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -sd 0 -at
+    if [[ "${7}" == "0" ]]; then
+        if [[ "${8}" == "1" ]]; then
+            /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 0 -at
         else
-            if [[ "${6}" == "0" ]]; then
-                /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -sd 0
+            if [[ "${8}" == "0" ]]; then
+                /F2MD/executeF2MD -s "${1}" -a 5 -c "${2}" -ad 5 -ml "${3}" -t "${4}" -fs "${5}" -fe "${6}" -sd 0
             else
                 echo "Attaching can only be 0 (not attaching) or 1 (attaching)"
                 exit 1
@@ -91,13 +93,13 @@ else
 fi
 
 echo "---------If waiting is 1 it should initiate the sequence now---------"
-if [[ "${7}" == "1" ]]; then
+if [[ "${9}" == "1" ]]; then
     echo "Looks like waiting was 1"
     # Check if sessions exist and pipe the error when none exist it into the variable
     RUNNING=$(tmux has-session -t $session 2>&1)
     echo "${RUNNING}"
     while [[ $RUNNING == "" ]]; do
-        if [[ "${5}" == "1" ]]; then
+        if [[ "${7}" == "1" ]]; then
             echo "Running Env" > "whole-log.txt"
         fi
         sleep 1
