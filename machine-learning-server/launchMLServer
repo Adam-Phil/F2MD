@@ -9,4 +9,4 @@ fi
 
 
 echo "called: python3 MLServer.py 9997 ${1} ${2} ${3} ${4} ${5}"
-python3 /F2MD/machine-learning-server/MLServer.py 9997 "${1}" "${2}" "${3} ${4} ${5}"
+python3 /F2MD/machine-learning-server/MLServer.py 9997 "${1}" "${2}" "${3}" "${4}" "${5}"

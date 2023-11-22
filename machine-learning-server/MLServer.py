@@ -77,6 +77,8 @@ def run(
         save_data = True
     else:
         raise ValueError("Save Data Parameter needs to be 0 or 1")
+    if positive_threshold > 1:
+        positive_threshold = positive_threshold / 100
     httpd = server_class(
         server_address,
         make_handler(
@@ -101,8 +103,8 @@ if __name__ == "__main__":
             ml_type=argv[2],
             save_data=argv[3],
             positive_threshold=argv[4],
-            feat_start=argv[5],
-            feat_end=argv[6],
+            feat_start=int(argv[5]),
+            feat_end=int(argv[6]),
             port=int(argv[1]),
         )
     else:

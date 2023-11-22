@@ -13,6 +13,8 @@ HELP="$HELP -c,  --check-type CHECK_TYPE                specify the type of plau
 HELP="$HELP -ad, --attacker-density ATTACKER_DENSITY    set the attacker density of the model\n"
 HELP="$HELP -ml, --ml-type ML_TYPE                      specify the type of machine learning to be used if an\n"
 HELP="$HELP -t,  --threshold THRESHOLD                  specify the threshold above which the probability given back by the ml algorithm is misbehavior or not\n"
+HELP="$HELP -fs, --feat-start FEAT_START                specify the start of the original feature part to be taken for ML prediction"
+HELP="$HELP -fe, --feat-end FEAT_END                    specify the end of the original feature part to be taken for ML prediction"
 HELP="$HELP -sd, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
 
 POSITIONAL=()
@@ -57,6 +59,16 @@ while [[ $# -gt 0 ]]; do
         ;;
     -t | --threshold)
         THRESHOLD="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -fs | --feat-start)
+        FEAT_START="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -fe | --feat-end)
+        FEAT_START="$2"
         shift # past argument
         shift # past value
         ;;
@@ -306,6 +318,22 @@ else
         fi
     fi
 
+    if [[ $FEAT_START == "" ]]; then
+        read -r -p "Please choose the start of the feature space to be taken: " FEAT_START
+        if [[ "$FEAT_START" =~ ^[[:digit:].e+-]+$ ]] && echo "$FEAT_START>100 && $FEAT_START<0" | bc -l | grep -q 1; then
+            echo "${FEAT_START} is out of bounds"
+            exit 1
+        fi
+    fi
+
+    if [[ $FEAT_END == "" ]]; then
+        read -r -p "Please choose the end of the feature space to be taken: " FEAT_END
+        if [[ "$FEAT_END" =~ ^[[:digit:].e+-]+$ ]] && echo "$FEAT_END>100 && $FEAT_END<0" | bc -l | grep -q 1; then
+            echo "${FEAT_END} is out of bounds"
+            exit 1
+        fi
+    fi
+
     echo "Starting F2MD with following configuration:"
     echo "Scenario: ${SCENARIO} (${opt_net})"
     echo "App Type: ${APP_TYPE} (${opt_app})"
@@ -314,11 +342,13 @@ else
     echo "Machine Learning Type: ${ML_TYPE}"
     echo "Saving Data: ${SAVE_DATA} (${opt_save})"
     echo "Threshold for ML is: ${THRESHOLD}"
+    echo "Feat start for ML is: ${FEAT_START}"
+    echo "Feat end for ML is: ${FEAT_END}"
     tmux new-session -s F2MD -n etc -d "cd /etc; bash -i"
     if [[ $LOGGING == "YES" ]]; then
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} > ml-server-log.txt; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END} > ml-server-log.txt; bash -i"
     else
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD}; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END}; bash -i"
     fi
     if [[ $LOGGING == "YES" ]]; then
         tmux new-window -t F2MD:2 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
