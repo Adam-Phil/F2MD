@@ -172,12 +172,26 @@ class MlMain:
             if self.feat_start < 0:
                 self.feat_start = 0
             start_time_p = time.time()
-
+            array_npy = np.array(array_npy)
             end_time_p = time.time()
-            if "SVM" in AIType or "MLP" in AIType:
+            dim = array_npy.ndim
+            if dim == 1:
                 if self.feat_end > len(array_npy):
                     self.feat_end = len(array_npy)
-                array_npy = array_npy[self.feat_start : self.feat_end]
+                array_npy = array_npy[self.feat_start:self.feat_end]
+            elif dim == 2:
+                if self.feat_end > len(array_npy):
+                    self.feat_end = len(array_npy[0])
+                array_npy = array_npy[:,self.feat_start:self.feat_end]
+            elif dim == 3:
+                if self.feat_end > len(array_npy):
+                    self.feat_end = len(array_npy[0][0])
+                array_npy = array_npy[:,:,self.feat_start : self.feat_end]
+            else:
+                raise ValueError("Unknown array_npy dim")
+            print(array_npy)
+            print(np.shape(array_npy))
+            if "SVM" in AIType or "MLP" in AIType:  
                 pred_array = self.clf.predict_proba(array_npy)
                 if (
                     isinstance(pred_array, list) or isinstance(pred_array, np.ndarray)
@@ -188,12 +202,7 @@ class MlMain:
                     prediction = pred_array[0][1]
                 else:
                     prediction = pred_array
-            else:
-                (_,_,s) = np.shape(array_npy)
-                if self.feat_end > s:
-                    self.feat_end = s
-                array_npy = array_npy[:,:,self.feat_start : self.feat_end]
-                print(np.shape(array_npy))
+            else:                
                 pred_array = self.clf.predict(array_npy)
 
                 if (

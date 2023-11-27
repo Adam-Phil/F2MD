@@ -3,6 +3,7 @@ Programs/*
 f2md-results/*Scenario*
 f2md-results/Analysis
 f2md-results/*.py
+f2md-results/BadResults
 oldExecutionScript
 awesome-program.txt
 awesome-program-copy.txt
