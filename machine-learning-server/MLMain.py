@@ -189,8 +189,6 @@ class MlMain:
                 array_npy = array_npy[:,:,self.feat_start : self.feat_end]
             else:
                 raise ValueError("Unknown array_npy dim")
-            print(array_npy)
-            print(np.shape(array_npy))
             if "SVM" in AIType or "MLP" in AIType:  
                 pred_array = self.clf.predict_proba(array_npy)
                 if (
