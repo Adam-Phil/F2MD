@@ -22,6 +22,7 @@ from MLPDropout import MLPDropout
 from MLTrainer import MlTrainer
 import datetime
 import joblib
+import keras
 
 from MLLabelEncoder import MlLabelEncoder
 from MLStats import MlStats
@@ -200,8 +201,10 @@ class MlMain:
                     prediction = pred_array[0][1]
                 else:
                     prediction = pred_array
-            else:                
-                pred_array = self.clf.predict(array_npy)
+            else:
+                extractor = keras.Model(inputs = self.clf.inputs,outputs=[layer.output for layer in self.clf.layers])
+                features = extractor(array_npy)
+                pred_array = float(features[-1][0][0])
 
                 if (
                     isinstance(pred_array, list) or isinstance(pred_array, np.ndarray)
