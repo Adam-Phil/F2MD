@@ -181,11 +181,11 @@ class MlMain:
                     self.feat_end = len(array_npy)
                 array_npy = array_npy[self.feat_start:self.feat_end]
             elif dim == 2:
-                if self.feat_end > len(array_npy):
+                if self.feat_end > len(array_npy[0]):
                     self.feat_end = len(array_npy[0])
                 array_npy = array_npy[:,self.feat_start:self.feat_end]
             elif dim == 3:
-                if self.feat_end > len(array_npy):
+                if self.feat_end > len(array_npy[0][0]):
                     self.feat_end = len(array_npy[0][0])
                 array_npy = array_npy[:,:,self.feat_start : self.feat_end]
             else:
