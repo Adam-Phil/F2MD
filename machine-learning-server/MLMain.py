@@ -53,7 +53,6 @@ class MlMain:
     dataCollector = MlDataCollector()
     trainer = MlTrainer()
     storage = MlNodeStorage()
-    arrayLength = 20
 
     collectDur = 0
     deltaCall = 100000
@@ -97,12 +96,15 @@ class MlMain:
         if not (os.path.exists(concat_data_path) and os.path.isdir(concat_data_path)):
             deepMkDir(concat_data_path)
 
-    def init(self, AIType, RTsave, positive_threshold, feat_start, feat_end):
+    def init(
+        self, AIType, RTsave, positive_threshold, feat_start, feat_end, recurrence
+    ):
         self.le.fit(self.labels_legacy)
         self.RTsave = RTsave
         self.positive_threshold = positive_threshold
         self.feat_start = feat_start
         self.feat_end = feat_end
+        self.recurrence = recurrence
         self.create_save_folders()
 
         self.dataCollector.setCurDateSrt(self.curDateStr)
@@ -123,10 +125,19 @@ class MlMain:
         return False
 
     def mlMain(
-        self, bsmJsonString, AIType, save_data, positive_threshold, feat_start, feat_end
+        self,
+        bsmJsonString,
+        AIType,
+        save_data,
+        positive_threshold,
+        feat_start,
+        feat_end,
+        recurrence,
     ):
         if not self.initiated:
-            self.init(AIType, save_data, positive_threshold, feat_start, feat_end)
+            self.init(
+                AIType, save_data, positive_threshold, feat_start, feat_end, recurrence
+            )
             self.initiated = True
 
         start_time = time.time()
@@ -179,18 +190,18 @@ class MlMain:
             if dim == 1:
                 if self.feat_end > len(array_npy):
                     self.feat_end = len(array_npy)
-                array_npy = array_npy[self.feat_start:self.feat_end]
+                array_npy = array_npy[self.feat_start : self.feat_end]
             elif dim == 2:
                 if self.feat_end > len(array_npy[0]):
                     self.feat_end = len(array_npy[0])
-                array_npy = array_npy[:,self.feat_start:self.feat_end]
+                array_npy = array_npy[:, self.feat_start : self.feat_end]
             elif dim == 3:
                 if self.feat_end > len(array_npy[0][0]):
                     self.feat_end = len(array_npy[0][0])
-                array_npy = array_npy[:,:,self.feat_start : self.feat_end]
+                array_npy = array_npy[:, :, self.feat_start : self.feat_end]
             else:
                 raise ValueError("Unknown array_npy dim")
-            if "SVM" in AIType or "MLP" in AIType:  
+            if "SVM" in AIType or "MLP" in AIType:
                 pred_array = self.clf.predict_proba(array_npy)
                 if (
                     isinstance(pred_array, list) or isinstance(pred_array, np.ndarray)
@@ -202,7 +213,10 @@ class MlMain:
                 else:
                     prediction = pred_array
             else:
-                extractor = keras.Model(inputs = self.clf.inputs,outputs=[layer.output for layer in self.clf.layers])
+                extractor = keras.Model(
+                    inputs=self.clf.inputs,
+                    outputs=[layer.output for layer in self.clf.layers],
+                )
                 features = extractor(array_npy)
                 pred_array = float(features[-1][0][0])
 
@@ -264,7 +278,7 @@ class MlMain:
         numLabel = np.array(self.le.transform([label])[0], dtype=np.int8)
 
         self.storage.add_bsm(
-            receiverId, pseudonym, time, bsmJsom, self.arrayLength, numLabel
+            receiverId, pseudonym, time, bsmJsom, self.recurrence, numLabel
         )
 
         if time - self.filterdelta > RTFilterTime:
@@ -284,37 +298,37 @@ class MlMain:
             "AVEFEAT" in AIType
         ):  # takes the average and minimum over the arrayLength messages of array features and adds the last label to it (length 36 and 1)
             returnArray = self.storage.get_array_MLP_features(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if (
             "AVERAGE" in AIType
         ):  # takes the same as before but adds the length of the history and the last positional data of the vehicle
             returnArray = self.storage.get_array_MLP(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "RECURRENT" in AIType:  # for LSTM as it uses sequential data
             returnArray = self.storage.get_array_lstm(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "RECUFEAT" in AIType:
             returnArray = self.storage.get_array_lstm_feat(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "RECUSIN" in AIType:
             returnArray = self.storage.get_array_lstm_sin(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "RECUMIX" in AIType:
             returnArray = self.storage.get_array_lstm_mix(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "RECUALL" in AIType:
             returnArray = self.storage.get_array_lstm_all(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
         if "COMBINED" in AIType:
             returnArray = self.storage.get_array_combined(
-                receiverId, pseudonym, self.arrayLength
+                receiverId, pseudonym, self.recurrence
             )
 
         # print("cur_array: " + str(cur_array))

@@ -20,7 +20,7 @@ from MLMain import MlMain
 version = "NOVER"
 
 
-def make_handler(ml_type, save_data, positive_threshold, feat_start, feat_end):
+def make_handler(ml_type, save_data, positive_threshold, feat_start, feat_end, recurrence):
     class S(BaseHTTPRequestHandler):
         globalMlMain = MlMain()
 
@@ -51,7 +51,7 @@ def make_handler(ml_type, save_data, positive_threshold, feat_start, feat_end):
             # requestStr = urllib2.unquote((self.path));
             # requestStr = unquote(self.path)
             pred = self.globalMlMain.mlMain(
-                self.path, ml_type, save_data, positive_threshold, feat_start, feat_end
+                self.path, ml_type, save_data, positive_threshold, feat_start, feat_end, recurrence
             )
 
             # the response
@@ -66,6 +66,7 @@ def run(
     positive_threshold,
     feat_start,
     feat_end,
+    recurrence=-1,
     server_class=HTTPServer,
     port=9997,
 ):
@@ -79,16 +80,29 @@ def run(
         raise ValueError("Save Data Parameter needs to be 0 or 1")
     if positive_threshold > 1:
         positive_threshold = positive_threshold / 100
-    httpd = server_class(
-        server_address,
-        make_handler(
-            ml_type=ml_type,
-            save_data=save_data,
-            positive_threshold=positive_threshold,
-            feat_start=feat_start,
-            feat_end=feat_end,
-        ),
-    )
+    if recurrence == -1:
+        httpd = server_class(
+            server_address,
+            make_handler(
+                ml_type=ml_type,
+                save_data=save_data,
+                positive_threshold=positive_threshold,
+                feat_start=feat_start,
+                feat_end=feat_end,
+            ),
+        )
+    else:
+        httpd = server_class(
+            server_address,
+            make_handler(
+                ml_type=ml_type,
+                save_data=save_data,
+                positive_threshold=positive_threshold,
+                feat_start=feat_start,
+                feat_end=feat_end,
+                recurrence=recurrence
+            ),
+        )
     print("Starting MLServer...")
     print("Listening on port " + str(port))
     httpd.serve_forever()
@@ -98,14 +112,25 @@ if __name__ == "__main__":
     from sys import argv
 
     print(argv)
-    if len(argv) == 7 or len(argv) == 6:
-        run(
-            ml_type=argv[2],
-            save_data=argv[3],
-            positive_threshold=argv[4],
-            feat_start=int(argv[5]),
-            feat_end=int(argv[6]),
-            port=int(argv[1]),
-        )
+    if len(argv) == 8 or len(argv) == 7:
+        if "LSTM" in argv[2]:
+           run(
+                ml_type=argv[2],
+                save_data=argv[3],
+                positive_threshold=argv[4],
+                feat_start=int(argv[5]),
+                feat_end=int(argv[6]),
+                recurrence=int(argv[7]),
+                port=int(argv[1]),
+            ) 
+        else:
+            run(
+                ml_type=argv[2],
+                save_data=argv[3],
+                positive_threshold=argv[4],
+                feat_start=int(argv[5]),
+                feat_end=int(argv[6]),
+                port=int(argv[1]),
+            )
     else:
         print("not enough argv")

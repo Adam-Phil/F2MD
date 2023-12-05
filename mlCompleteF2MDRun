@@ -117,7 +117,7 @@ if [[ "${WAITING}" == "1" ]]; then
             echo "Running Env" >"whole-log.txt"
         fi
         sleep 1
-        RUNNING=$(tmux has-session -t $session 2>&1)
+        RUNNING=$(tmux has-session -t $session 2>&1)FR
     done
 fi
 

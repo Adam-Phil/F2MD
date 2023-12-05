@@ -15,6 +15,7 @@ HELP="$HELP -ml, --ml-type ML_TYPE                      specify the type of mach
 HELP="$HELP -t,  --threshold THRESHOLD                  specify the threshold above which the probability given back by the ml algorithm is misbehavior or not\n"
 HELP="$HELP -fs, --feat-start FEAT_START                specify the start of the original feature part to be taken for ML prediction"
 HELP="$HELP -fe, --feat-end FEAT_END                    specify the end of the original feature part to be taken for ML prediction"
+HELP="$HELP -r,  --recurrence RECURRENCE                specify the time which an LSTM goes back to the past"
 HELP="$HELP -sd, --save-data SAVE_DATA                  specify whether to save data or not from the machine learning model\n"
 
 POSITIONAL=()
@@ -69,6 +70,11 @@ while [[ $# -gt 0 ]]; do
         ;;
     -fe | --feat-end)
         FEAT_END="$2"
+        shift # past argument
+        shift # past value
+        ;;
+    -r | --recurrence)
+        RECURRENCE="$2"
         shift # past argument
         shift # past value
         ;;
@@ -333,6 +339,17 @@ else
             exit 1
         fi
     fi
+    if [[ "${ML_TYPE}" == *"LSTM"* ]]; then
+        if [[ $RECURRENCE == "" ]]; then
+            read -r -p "Please choose the recurrent messages to be taken: " RECURRENCE
+            if [[ "$RECURRENCE" =~ ^[[:digit:].e+-]+$ ]] && echo "$RECURRENCE<0" | bc -l | grep -q 1; then
+                echo "${RECURRENCE} is out of bounds"
+                exit 1
+            fi
+        fi
+    else
+        RECURRENCE=" "
+    fi
 
     echo "Starting F2MD with following configuration:"
     echo "Scenario: ${SCENARIO} (${opt_net})"
@@ -344,11 +361,12 @@ else
     echo "Threshold for ML is: ${THRESHOLD}"
     echo "Feat start for ML is: ${FEAT_START}"
     echo "Feat end for ML is: ${FEAT_END}"
+    echo "Recurrence for ML is: ${RECURRENCE}"
     tmux new-session -s F2MD -n etc -d "cd /etc; bash -i"
     if [[ $LOGGING == "YES" ]]; then
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END} > ml-server-log.txt; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END} ${RECURRENCE} > ml-server-log.txt; bash -i"
     else
-        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END}; bash -i"
+        tmux new-window -t F2MD:1 -n var "cd /F2MD/machine-learning-server; ./launchMLServer ${ML_TYPE} ${SAVE_DATA} ${THRESHOLD} ${FEAT_START} ${FEAT_END} ${RECURRENCE}; bash -i"
     fi
     if [[ $LOGGING == "YES" ]]; then
         tmux new-window -t F2MD:2 -n var "cd /F2MD/; ./launchSumoTraciDaemon -ng > traci-log.txt; bash -i"
