@@ -9,6 +9,8 @@ def map_number_to_scenario(number):
         return "LuSTScenario"
     elif number == 4:
         return "UlmScenario"
+    elif number == 5:
+        return "EdgeIRTSystemXScenario"
     else:
         raise ValueError("Unknow scenario")
 

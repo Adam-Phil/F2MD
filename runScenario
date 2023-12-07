@@ -42,7 +42,7 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ $SCENARIO == "" ]]; then
     PS3='Please chose a scenario: '
-    options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario")
+    options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario" "EdgeIRTSystemXScenario")
     select opt_net in "${options_net[@]}"; do
         case $opt_net in
         "IRTSystemXScenario")
@@ -70,6 +70,11 @@ if [[ $SCENARIO == "" ]]; then
             echo "you chose choice $REPLY which is $opt_net"
             break
             ;;
+        "IRTSystemXScenario")
+            echo
+            echo "you chose choice $REPLY which is $opt_net"
+            break
+            ;;
         *)
             echo
             echo "invalid option $REPLY"
@@ -93,8 +98,12 @@ else
                     if [[ $SCENARIO == "4" ]]; then
                         opt_net="UlmScenario"
                     else
-                        echo "Choose a valid scenario please (from 0 to 4)"
-                        exit 1
+                        if [[ $SCENARIO == "5" ]]; then
+                            opt_net="EdgeIRTSystemXScenario"
+                        else
+                            echo "Choose a valid scenario please (from 0 to 4)"
+                            exit 1
+                        fi
                     fi
                 fi
             fi
