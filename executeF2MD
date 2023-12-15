@@ -166,15 +166,15 @@ if [[ $APP_TYPE == "" ]]; then
             echo
             echo "you chose choice $REPLY which is $opt_app"
             APP_TYPE=2
-            break
+            break           
             ;;
-        "ExperiApp")
+        "CooperativeApp")
             echo
             echo "you chose choice $REPLY which is $opt_app"
             APP_TYPE=3
             break
             ;;
-        "CooperativeApp")
+        "ExperiApp")
             echo
             echo "you chose choice $REPLY which is $opt_app"
             APP_TYPE=4

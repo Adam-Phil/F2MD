@@ -4,13 +4,16 @@ F2MD_DIR="/F2MD"
 RES_DIR="${F2MD_DIR}/f2md-results"
 PLOTS_DIR='gui-plots/'
 GUI_PLOTS_DIR="${RES_DIR}/${PLOTS_DIR}"
+ANALYSIS_DIR="${RES_DIR}/Analysis"
 
 for d in /F2MD/f2md-results/*/; do
     if [[ $d != "${GUI_PLOTS_DIR}" ]]; then
-        cp -r "${GUI_PLOTS_DIR}" "${d}"
-        cd "${d}"
-        gnuplot './gui-plots/realTimePlot.p'
-        sleep 2
-        cd "${RES_DIR}"
+        if [[ $d != "${ANALYSIS_DIR}" ]]; then
+            cp -r "${GUI_PLOTS_DIR}" "${d}"
+            cd "${d}"
+            gnuplot './gui-plots/realTimePlot.p'
+            sleep 2
+            cd "${RES_DIR}"
+        fi
     fi
 done
