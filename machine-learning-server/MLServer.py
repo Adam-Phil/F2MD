@@ -20,7 +20,7 @@ from MLMain import MlMain
 version = "NOVER"
 
 
-def make_handler(ml_type, save_data, positive_threshold, feat_start, feat_end, recurrence):
+def make_handler(ml_type, save_data, positive_threshold, feat_start, feat_end, recurrence=20):
     class S(BaseHTTPRequestHandler):
         globalMlMain = MlMain()
 
