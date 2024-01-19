@@ -28,6 +28,9 @@ fi
 
 CUR_DIR="/F2MD"
 
+options_net=("IRTSystemXScenario" "LuSTNanoScenario" "LuSTMiniScenario" "LuSTScenario" "UlmScenario" "EdgeIRTSystemXScenario")
+opt_net=${options_net[${1}]}
+
 SAVE_DIR="${CUR_DIR}/machine-learning-server/saveFile"
 CLF_DIR="${SAVE_DIR}/clfs"
 
@@ -50,6 +53,9 @@ if [[ ${3} == "SVM_SINGLE" ]]; then
 else
     partition="1.0"
 fi
+
+ret="${opt_check}-${3}-${opt_net}-ITSG5"
+
 CLF_NAME="clf_${3}_${opt_check}_${partition}.pkl"
 CLF_PATH="${CUR_DIR}/${CLF_NAME}"
 TO_CLF_PATH="${CLF_DIR}/${CLF_NAME}"
@@ -99,7 +105,8 @@ if [[ "${WAITING}" == "1" ]]; then
         if [[ "${LOGGING}" == "1" ]]; then
             echo "Running Env" >"whole-log.txt"
         fi
-        sleep 1
+        sleep 60
+        tail -1 "/F2MD/f2md-results/${ret}/AppV1.dat"
         RUNNING=$(tmux has-session -t $session 2>&1)
     done
 fi
